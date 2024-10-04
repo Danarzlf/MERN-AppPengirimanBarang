@@ -1,0 +1,27 @@
+#whyus {
+    /* text-align: center; */
+    background-color: #dee5fd;
+    padding-top: 80px;
+    padding-bottom: 80px;
+    color: black;
+ }
+
+ .image-text-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* Atur agar konten berada di tengah */
+  }
+  
+  .image-text {
+    display: flex;
+    flex-direction: row; /* Tampilkan gambar dan teks secara berdampingan */
+    align-items: center; /* Posisikan teks agar berada di tengah */
+    margin-bottom: 20px; /* Beri jarak antar elemen */
+    width: 50%; /* Atur lebar elemen agar menyesuaikan layar */
+  }
+  
+  .image-text img {
+    max-width: 100px; /* Atur lebar maksimum gambar */
+    margin-right: 20px; /* Beri jarak antara gambar dan teks */
+  }
+  

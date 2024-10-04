@@ -1,0 +1,6 @@
+.otp-column {
+    width: 50px; /* Set your desired width */
+  height: 50px; /* Set your desired height */
+  margin: 0 5px; /* Optional margin between input fields */
+  font-size: 14px; /* Set your desired font size */
+}

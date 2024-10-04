@@ -1,0 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Roboto+Slab&family=Rubik&display=swap');
+
+:root {
+  --main-color: #6148ff; 
+  --secondary-color: #42a5f5; 
+}
+
+/* var(--main-color) */
+/* var(--secondary-color) */
+/* #1c2331 */
+
+body {
+  color: black;
+  font-family: 'Nunito', sans-serif !important;
+  /* background: rgb(40, 40, 40); */
+  background: #EFF1F3;
+}

@@ -1,0 +1,6 @@
+.card-book {
+    padding: 20px;
+    max-height: 300px; /* Atur tinggi maksimum sesuai kebutuhan */
+    overflow: hidden;  
+}
+

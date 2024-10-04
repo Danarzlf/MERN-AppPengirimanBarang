@@ -1,0 +1,26 @@
+.title-register {
+    color: var(--main-color);
+    font-weight: 800;
+    font-size: 45px;
+}
+
+.btn-register {
+    background-color: var(--main-color) !important;
+    height: 50px;
+    border-radius: 10px !important;
+    border: none !important
+}
+
+.to-login {
+    text-align: center;
+    font-size: 16px;
+}
+
+.placeholder-register::placeholder {
+    color: #A6A6A6 !important;
+  }
+
+  .placeholder-register{
+    border-color: #A6A6A6 !important;
+    background-color: #EFF1F3 !important;
+  }

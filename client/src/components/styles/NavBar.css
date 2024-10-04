@@ -1,0 +1,40 @@
+.navbar {
+    background-color: var(--main-color);
+}
+
+.text-logo {
+    font-weight: 800;
+}
+
+#basic-nav-dropdown {
+    padding: 0;
+}
+
+.dropdown-toggle::after {
+    display: none !important; 
+}
+
+.nav-bg-profile {
+    padding: 0 !important;
+    background-color: var(--main-color) !important;
+    border: none !important;
+}
+.nav-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--secondary-color);
+    width: 10rem;
+    height: 2.5rem;
+    gap: 7px;
+    font-weight: 900;
+    font-size: large;
+    border-radius: 10px;
+    padding: 0.5rem; /* Optional: Add padding for better visual appearance */
+}
+
+.login-navbar{
+    font-weight: bold;
+    font-size: 20px;
+}
+
