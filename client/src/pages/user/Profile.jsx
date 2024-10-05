@@ -85,19 +85,19 @@ const Profile = () => {
               </ListGroup>
               <ListGroup as="ul">
                 <ListGroup.Item as="li" active={currentTab === "profile"} onClick={() => handleTabChange("profile")}>
-                  <img className="tab-profile-img" src="profile-null.png" />
-                  Profile
-                </ListGroup.Item>
-                <ListGroup.Item as="li" active={currentTab === "pesanan"} onClick={() => handleTabChange("pesanan")}>
-                  <img className="tab-profile-img" src="profile-null.png" />
+                  <img className="tab-profile-img" src="package.png" />
                   Pesanan
                 </ListGroup.Item>
+                <ListGroup.Item as="li" active={currentTab === "pesanan"} onClick={() => handleTabChange("pesanan")}>
+                  <img className="tab-profile-img" src="profile-.png" />
+                  Profile
+                </ListGroup.Item>
                 <ListGroup.Item as="li" active={currentTab === "changepassword"} onClick={() => handleTabChange("changepassword")}>
-                  <img className="tab-profile-img" src="profile-null.png" />
+                  <img className="tab-profile-img" src="change-password.png" />
                   Ubah Password
                 </ListGroup.Item>
                 <ListGroup.Item as="li" onClick={() => logoutUser()}>
-                  <img className="tab-profile-img" src="profile-null.png" />
+                  <img className="tab-profile-img" src="logout-.png" />
                   Keluar
                 </ListGroup.Item>
               </ListGroup>
@@ -105,6 +105,10 @@ const Profile = () => {
 
             <div className="col-md-9">
               {currentTab === "profile" && (
+                 <LinkUpProfile /> 
+              )}
+              {currentTab === "pesanan" && (
+               
                 <div className="card mb-3 p-5">
                   <div className="mb-3">
                     {userProfiles?.userProfile?.profilePicture ? (
@@ -298,9 +302,6 @@ const Profile = () => {
                   </div>
                 </div>
               )}
-              {currentTab === "pesanan" && (
-                <LinkUpProfile /> // Assuming this is your Pickup component
-              )}
               {currentTab === "changepassword" && (
                  <ChangePassword />
               )}
@@ -308,7 +309,7 @@ const Profile = () => {
           </div>
         </div>
       </Container>
-      <Footer />
+      {/* <Footer /> */}
       <LogoutModal
         show={isLogoutModalVisible}
         handleClose={hideLogoutModal}

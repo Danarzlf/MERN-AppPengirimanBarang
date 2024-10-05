@@ -274,7 +274,9 @@ const getAllShipments = async (req, res, next) => {
           courier: { $first: "$courier" },
           noTrack: { $first: "$noTrack" },
           type: { $first: "$type" },
+          costShipment: { $first: "$costShipment" },
           createdAt: { $first: "$createdAt" },
+          status: { $first: "$status" },
           // Tambahkan field lain yang Anda butuhkan
         },
       },

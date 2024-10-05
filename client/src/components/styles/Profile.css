@@ -96,7 +96,7 @@
 }
 
 .tab-profile-img {
-    max-width: 30px;
+    max-width: 25px;
     margin-left: 15px;
     margin-right: 25px;
 }
@@ -113,3 +113,15 @@
     text-decoration: none !important;
     color: black;
 }
+
+/* .list-group-item:hover {
+    background-color: #f0f0f0; 
+    color: #007bff;
+  } */
+  
+  .list-group-item.active {
+    background-color: white !important; /* Latar belakang transparan saat aktif */
+    color: black !important;
+    outline: 1px solid var(--main-color) !important; /* Garis luar berwarna biru saat aktif */
+    /* outline-offset: 2px;  */
+  }

@@ -1,4 +1,5 @@
 import { useState, useContext, useEffect } from "react";
+import { Button } from "react-bootstrap";
 import { ProfileContext } from "../../context/ProfileContext";
 import Table from 'react-bootstrap/Table';
 import axios from 'axios'; // Import axios for API requests
@@ -48,7 +49,7 @@ const LinkUpProfile = () => {
     <>
       <div className="card">
         <ul className="">
-          <div className="title-profile-booking list-group-item d-flex justify-content-between align-items-center flex-wrap">
+          {/* <div className="title-profile-booking list-group-item d-flex justify-content-between align-items-center flex-wrap">
             <button 
               className={`btn ${showPesanan ? 'btn-primary' : ''}`} 
               onClick={() => setShowPesanan(true)}
@@ -61,30 +62,42 @@ const LinkUpProfile = () => {
             >
               Riwayat
             </button>
-          </div>
+          </div> */}
           <div className="profile-booking">
-            {error && <p>{error}</p>} 
+            {/* {error && <p>{error}</p>}  */}
             {showPesanan ? (
               <>
                 <h5>Pesanan</h5>
-                <p>Pesanan kamu akan tampil disini</p>
-                <Table hover>
+                <p style={{fontSize:'14px'}}>Pesanan kamu akan tampil disini</p>
+                <Table hover className="mt-4">
                   <thead>
                     <tr>
-                      <th>No. Resi</th>
-                      <th>Tipe</th>
-                      <th>Tanggal</th>
-                      <th>Aksi</th>
+                      <th></th>
+                      <th>no resi</th>
+                      <th>tipe</th>
+                      <th>status</th>
+                      <th>tanggal</th>
+                      <th>biaya</th>
+                      <th>aksi</th>
                     </tr>
                   </thead>
                   <tbody>
                     {filteredShipments.map((shipment, index) => (
                       <tr key={index}>
+                        <td>{index + 1}</td>
                         <td>{shipment?.noTrack}</td>
                         <td>{shipment?.type}</td>
-                        <td>{shipment?.createdAt}</td>
+                        <td>{shipment?.status}</td>
                         <td>
-                          <button onClick={() => navigate(`/receipt/${shipment.noTrack}`)}>Detail</button>
+                          {new Date(shipment?.createdAt).toLocaleDateString('id-ID', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric',
+                          }).replace(/\//g, '-')}
+                        </td>
+                        <td>{shipment?.costShipment}</td>
+                        <td>
+                          <Button style={{backgroundColor:"var(--main-color)", border:"none"}} onClick={() => navigate(`/receipt/${shipment.noTrack}`)}>Detail</Button>
                         </td>
                       </tr>
                     ))}
@@ -111,7 +124,7 @@ const LinkUpProfile = () => {
                         <td>{shipment.bookingNumber}</td>
                         <td>{shipment.date}</td>
                         <td>
-                          <button onClick={() => navigate(`/receipt/${shipment.trackingNumber}`)}>Aksi</button>
+                          <Button onClick={() => navigate(`/receipt/${shipment.trackingNumber}`)}>Aksi</Button>
                         </td>
                       </tr>
                     ))}

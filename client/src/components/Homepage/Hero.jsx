@@ -27,7 +27,7 @@ const Hero = () => {
               Mau barangmu sampai ke tujuan dengan cepat dan aman?
             </h1>
             <h2 data-aos="fade-up" data-aos-delay={400}>
-              Kirim sekarang barangmu dengan KIRIMKAN
+              Kirim sekarang barangmu dengan KirimKan
             </h2>
             <div data-aos="fade-up" data-aos-delay={600}>
               <div className="text-center text-lg-start" onClick={handleButtonClick} style={{ cursor: 'pointer'}}>

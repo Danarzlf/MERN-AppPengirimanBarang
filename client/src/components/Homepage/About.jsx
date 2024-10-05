@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
+import Table from 'react-bootstrap/Table';
 import "../../components/styles/About.css";
 import { TrackContext } from "../../context/TrackContext"; // Adjust the import path as needed
 import { CityContext } from "../../context/CityContext";
@@ -51,14 +52,14 @@ const About = () => {
             <p>
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione aliquid eos iusto placeat natus aspernatur.
             </p>
-            <button className="btn btn-light mt-4">Selengkapnya</button>
+            <button className="btn mt-4" style={{backgroundColor:'#3884c4', color:"white"}}>Selengkapnya</button>
           </div>
           <div className="col-lg-6 about-package" data-aos="zoom-out" data-aos-delay={200}>
             <div>
-              <button className={`btn ${showTrackForm ? "btn-light" : ""}`} onClick={handleTrackClick}>
+              <button className={`btn ${showTrackForm ? "btn-light" : "text-white"}`} onClick={handleTrackClick}>
                 Lacak Paket
               </button>
-              <button className={`btn ms-2 ${showPriceForm ? "btn-light" : ""}`} onClick={handlePriceClick}>
+              <button className={`btn ms-2 ${showPriceForm ? "btn-light" : "text-white"}`} onClick={handlePriceClick}>
                 Estimasi Harga
               </button>
             </div>
@@ -74,21 +75,41 @@ const About = () => {
                   value={trackingId}
                   onChange={(e) => setTrackingId(e.target.value)}
                 />
-                <button className="btn btn-primary mt-2 btn-track" onClick={handleTrackPackage}>
+                <button className="btn mt-2 btn-track" style={{backgroundColor: "#3884c4", color:"white"}} onClick={handleTrackPackage}>
                   Lacak
                 </button>
 
                 {shipmentData ? (
-                  <div className="shipment-data mt-3">
-                    <h5>Shipment Details</h5>
-                    <p><strong>Tracking ID:</strong> {shipmentData?.data?.shipment?._id}</p>
-                    <p><strong>Status:</strong> {shipmentData?.data?.shipment?.status}</p>
-                    <p><strong>Pengirim:</strong> {shipmentData?.data?.shipment?.sender?.name}</p>
-                    <p><strong>Penerima:</strong> {shipmentData?.data?.shipment?.recipient?.name}</p>
-                    <p><strong>Alamat Tujuan:</strong> {shipmentData?.data?.shipment?.recipient?.destinationCity}</p>
-                    <button onClick={handleViewReceipt}>Lihat Resi</button>
-                    <button>Tutup</button>
-                  </div>
+                  <>
+                    <Table hover className="mt-4">
+                      <thead>
+                        <tr>
+                          <th>No Resi</th>
+                          <th>tipe</th>
+                          <th>status</th>
+                          <th>tanggal</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>{shipmentData?.data?.shipment?.noTrack}</td>
+                          <td>{shipmentData?.data?.shipment?.type}</td>
+                          <td>{shipmentData?.data?.shipment?.status}</td>
+                          <td>
+                            {new Date(shipmentData?.data?.shipment?.createdAt).toLocaleDateString('id-ID', {
+                              day: '2-digit',
+                              month: '2-digit',
+                              year: 'numeric',
+                            }).replace(/\//g, '-')}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </Table>
+                    <div className="text-end">
+                      <Button className="me-2" onClick={handleViewReceipt} style={{backgroundColor:'#3884c4', border:'none'}}>Lihat Resi</Button>
+                      <Button className="btn-dark">Reset</Button>
+                    </div>
+                  </>
                 ) : error ? (
                   <p className="text-danger mt-3">{error}</p>
                 ) : (

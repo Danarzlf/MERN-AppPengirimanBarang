@@ -2,6 +2,7 @@
   import { Container, Collapse, ListGroup, Button } from "react-bootstrap";
   import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
   import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
+  import { FaCheck } from 'react-icons/fa';
   import { AuthContext } from "../../context/AuthContext";
   import { ShipmentContext } from "../../context/ShipmentContext";
   import { useLocation } from "react-router-dom"; // Import useLocation
@@ -61,12 +62,15 @@
     const [isPackageCreated, setIsPackageCreated] = useState(false); 
 
     const [estimatedCost, setEstimatedCost] = useState(null);
+    const [deliveryService, setDeliveryService] = useState("REGULER"); // Default to 'REGULER'
 
     const [openPengirim, setOpenPengirim] = useState(true);
     const [openPenerima, setOpenPenerima] = useState(true);
     const [openBarang, setOpenBarang] = useState(true);
     const [useVolume, setUseVolume] = useState(false); // State for volume checkbox
     const [useInsurance, setUseInsurance] = useState(false); // State for insurance checkbox
+
+    console.log("ini delivery service",deliveryService)
 
     const handleVolumeChange = (e) => {
       setUseVolume(e.target.checked);
@@ -183,6 +187,8 @@ const handleSubmitPackage = async (e) => {
       console.log("Package created successfully:", data);
       setIsPackageCreated(true);
       // Add logic for successful package creation
+      // Call estimateCost after package creation
+      await estimateCost();
     } else {
       console.error(data.message);
     }
@@ -209,6 +215,7 @@ const handleSubmitPackage = async (e) => {
             height: heightPackage,
             width: widthPackage,
             length: lengthPackage,
+            deliveryService,
           }),
         });
         const data = await response.json();
@@ -263,6 +270,7 @@ const handleSubmitPackage = async (e) => {
                                 onChange={(e) => setName(e.target.value)}
                                 required
                                 disabled={isSenderCreated} 
+                                autoComplete="off"
                               />
                             </div>
                             <div className="col-md-6">
@@ -277,6 +285,7 @@ const handleSubmitPackage = async (e) => {
                                 onChange={(e) => setPhoneNumber(e.target.value)}
                                 required
                                 disabled={isSenderCreated} 
+                                autoComplete="off"
                               />
                             </div>
                           </div>
@@ -292,6 +301,7 @@ const handleSubmitPackage = async (e) => {
                               onChange={(e) => setCity(e.target.value)}
                               required
                               disabled={isSenderCreated} 
+                              autoComplete="off"
                             />
                           </div>
                           <div className="mb-3">
@@ -306,11 +316,12 @@ const handleSubmitPackage = async (e) => {
                               onChange={(e) => setAddress(e.target.value)}
                               required
                               disabled={isSenderCreated} 
+                              autoComplete="off"
                             />
                           </div>
                           <div className="d-flex justify-content-end">
-                          <Button type="submit" variant="primary" disabled={loading || isSenderCreated}>
-                              {isSenderCreated ? "Berhasil" : loading ? "Menyimpan..." : "Simpan Data Pengirim"}
+                          <Button type="submit" variant="primary" style={{backgroundColor:'#002754', border:'none'}} disabled={loading || isSenderCreated}>
+                              {isSenderCreated ? "Berhasil" : loading ? "Menyimpan..." : "Simpan"}
                           </Button>
 
                           </div>
@@ -340,6 +351,8 @@ const handleSubmitPackage = async (e) => {
                                 value={nameRecipient} 
                                 onChange={(e) => setNameRecipient(e.target.value)}
                                 disabled={isRecipientCreated}
+                                required
+                                autoComplete="off"
                               />
                             </div>
                             <div className="col-md-6">
@@ -353,6 +366,8 @@ const handleSubmitPackage = async (e) => {
                                 value={phoneNumberRecipient}
                                 onChange={(e) => setPhoneNumberRecipient(e.target.value)}
                                 disabled={isRecipientCreated}
+                                required
+                                autoComplete="off"
                               />
                             </div>
                           </div>
@@ -367,6 +382,8 @@ const handleSubmitPackage = async (e) => {
                               value={cityRecipient}
                               onChange={(e) => setCityRecipient(e.target.value)}
                               disabled={isRecipientCreated}
+                              required
+                              autoComplete="off"
                             />
                           </div>
                           <div className="mb-3">
@@ -380,11 +397,13 @@ const handleSubmitPackage = async (e) => {
                               value={addressRecipient}
                               onChange={(e) => setAddressRecipient(e.target.value)}
                               disabled={isRecipientCreated}
+                              required
+                              autoComplete="off"
                             />
                           </div>
                           <div className="d-flex justify-content-end">
-                          <Button type="submit" variant="primary" disabled={loading || isRecipientCreated}>
-                              {isRecipientCreated ? "Berhasil" : loading ? "Menyimpan..." : "Simpan Data Penerima"}
+                          <Button type="submit" variant="primary" style={{backgroundColor:'#002754', border:'none'}} disabled={loading || isRecipientCreated}>
+                              {isRecipientCreated ? "Berhasil" : loading ? "Menyimpan..." : "Simpan"}
                           </Button>
                           </div>
                         </form>
@@ -412,6 +431,8 @@ const handleSubmitPackage = async (e) => {
                             value={itemNamePackage}
                             onChange={(e) => setItemNamePackage(e.target.value)}
                             disabled={isPackageCreated}
+                            required
+                            autoComplete="off"
                           />
                         </div>
 
@@ -426,6 +447,8 @@ const handleSubmitPackage = async (e) => {
                               value={weightPackage}
                               onChange={(e) => setWeightPackage(e.target.value)}
                               disabled={isPackageCreated}
+                              required
+                              autoComplete="off"
                             />
                           </div>
                           <div className="col-md-6">
@@ -438,6 +461,8 @@ const handleSubmitPackage = async (e) => {
                               value={quantityPackage}
                               onChange={(e) => setQuantityPackage(e.target.value)}
                               disabled={isPackageCreated}
+                              required
+                              autoComplete="off"
                             />
                           </div>
                         </div>
@@ -484,6 +509,7 @@ const handleSubmitPackage = async (e) => {
                                   value={lengthPackage}
                                   onChange={(e) => setLengthPackage(e.target.value)}
                                   disabled={isPackageCreated}
+                                  autoComplete="off"
                                 />
                                 <span className="input-group-text">cm</span>
                               </div>
@@ -499,6 +525,7 @@ const handleSubmitPackage = async (e) => {
                                   value={widthPackage}
                                   onChange={(e) => setWidthPackage(e.target.value)}
                                   disabled={isPackageCreated}
+                                  autoComplete="off"
                                 />
                                 <span className="input-group-text">cm</span>
                               </div>
@@ -514,6 +541,7 @@ const handleSubmitPackage = async (e) => {
                                   value={heightPackage}
                                   onChange={(e) => setHeightPackage(e.target.value)}
                                   disabled={isPackageCreated}
+                                  autoComplete="off"
                                 />
                                 <span className="input-group-text">cm</span>
                               </div>
@@ -536,6 +564,7 @@ const handleSubmitPackage = async (e) => {
                                   value={itemValuePackage}
                                   onChange={(e) => setItemValuePackage(e.target.value)}
                                   disabled={isPackageCreated}
+                                  autoComplete="off"
                                 />
                               </div>
                             </div>
@@ -554,6 +583,7 @@ const handleSubmitPackage = async (e) => {
                             value={typePackage} // Bind the value to the state
                             onChange={(e) => setTypePackage(e.target.value)} // Update the state when the value changes
                             disabled={isPackageCreated}
+                            required
                           >
                             <option value="" disabled>
                               Pilih
@@ -572,6 +602,7 @@ const handleSubmitPackage = async (e) => {
                               className="form-control"
                               id="description"
                               disabled={isPackageCreated} 
+                              autoComplete="off"
                             />
                           </div>
                         </div>
@@ -588,48 +619,94 @@ const handleSubmitPackage = async (e) => {
                             value={remarksPackage}
                             onChange={(e) => setRemarksPackage(e.target.value)}
                             disabled={isPackageCreated} 
+                            autoComplete="off"
                           ></textarea>
                         </div>
 
+                        <div className="row mb-3">
+                          <div className="col-md-6">
+                            <label htmlFor="deliveryService" className="form-label">
+                              Jenis Layanan Pengiriman<span style={{ color: 'red' }}>*</span>
+                            </label>
+                            <select
+                              className="form-control"
+                              id="deliveryService"
+                              value={deliveryService} // Bind the value to the state
+                              onChange={(e) => setDeliveryService(e.target.value)} // Update the state when the value changes
+                              disabled={isPackageCreated} // Disable if package is created
+                            >
+                              <option value="REGULER">REGULER</option>
+                              <option value="NEXTDAY">NEXTDAY</option>
+                              <option value="CARGO">CARGO</option>
+                              <option value="SAMEDAY">SAMEDAY</option>
+                            </select>
+                          </div>
+                        </div>
+
+
                         <div className="d-flex justify-content-end">
-                        <Button type="submit" variant="primary" disabled={loading || isPackageCreated}>
-                              {isPackageCreated ? "Berhasil" : loading ? "Menyimpan..." : "Simpan Data Barang"}
+                        <Button type="submit" variant="primary" style={{backgroundColor:'#002754', border:'none'}} disabled={loading || isPackageCreated}>
+                              {isPackageCreated ? "Berhasil" : loading ? "Menyimpan..." : "Simpan"}
                           </Button>
                         </div>
                       </form>
 
-                       {/* Tambahkan tombol untuk menghitung estimasi biaya setelah paket dibuat */}
-                       {isPackageCreated && (
+              
+                       {/* {isPackageCreated && (
                         <div className="d-flex justify-content-end mt-3">
                           <Button variant="secondary" onClick={estimateCost} disabled={loading}>
                             {loading ? "Menghitung..." : "Hitung Estimasi Biaya"}
-                          </Button>
-                        
-                          <p>Estimated Cost: {estimatedCost} IDR</p>
-                        </div>
-                        
-                      )}
+                          </Button>           
+                        </div>              
+                      )} */}
+                      
+    
                     </div>
                   </div>
                 </Collapse>
+                <p>Estimated Cost:</p>
+                       <p>{estimatedCost}IDR</p>
               </div>
             </div>
             <div className="col-md-3 mb-3">
               <ListGroup as="ul">
-                <ListGroup.Item as="li" onClick={() => setOpenPengirim(!openPengirim)}>
-                  <img className="tab-profile-img" src="profile-null.png" alt="Pengirim" />
-                  Pengirim
+                <ListGroup.Item as="li" onClick={() => setOpenPengirim(!openPengirim)} className="d-flex align-items-center justify-content-between">
+                  <div className="d-flex align-items-center">
+                    <img className="tab-profile-img" src="sender.png" alt="Pengirim" />
+                    <span>Pengirim</span>
+                  </div>
+                  {isSenderCreated && <FaCheck style={{ color: 'green' }} />} {/* Checkmark if sender is created */}
                 </ListGroup.Item>
-                <ListGroup.Item as="li" onClick={() => setOpenPenerima(!openPenerima)}>
-                  <img className="tab-profile-img" src="profile-null.png" alt="Penerima" />
-                  Penerima
+                
+                <ListGroup.Item as="li" onClick={() => setOpenPenerima(!openPenerima)} className="d-flex align-items-center justify-content-between">
+                  <div className="d-flex align-items-center">
+                    <img className="tab-profile-img" src="recipient.png" alt="Penerima" />
+                    <span>Penerima</span>
+                  </div>
+                  {isRecipientCreated && <FaCheck style={{ color: 'green' }} />} {/* Checkmark if recipient is created */}
                 </ListGroup.Item>
-                <ListGroup.Item as="li" onClick={() => setOpenBarang(!openBarang)}>
-                  <img className="tab-profile-img" src="profile-null.png" alt="Barang" />
-                  Barang
+
+                <ListGroup.Item as="li" onClick={() => setOpenBarang(!openBarang)} className="d-flex align-items-center justify-content-between">
+                  <div className="d-flex align-items-center">
+                    <img className="tab-profile-img" src="package.png" alt="Barang" />
+                    <span>Barang</span>
+                  </div>
+                  {isPackageCreated && <FaCheck style={{ color: 'green' }} />} {/* Checkmark if package is created */}
                 </ListGroup.Item>
               </ListGroup>
-              <Button onClick={() => showCheckModal()}>Selanjutnya</Button>
+
+              <Button 
+                className="w-100 mt-3" 
+                style={{ backgroundColor: "#002754", border: "none" }} 
+                onClick={() => showCheckModal()}
+                disabled={!isSenderCreated || !isRecipientCreated || !isPackageCreated}
+              >
+                Selanjutnya
+              </Button>
+              <p className="text-end mt-3" style={{fontSize:'13px'}}>
+                  Harap isi semua data untuk melanjutkan<span style={{ color: 'red' }}>*</span>
+              </p>
+
             </div>
           </div>
         </div>

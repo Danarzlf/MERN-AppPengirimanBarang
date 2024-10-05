@@ -177,7 +177,7 @@ const NavBarNormal = () => {
                         <span>Profile</span>
                       </div>
                     </NavDropdown.Item>
-                    <NavDropdown.Item
+                    {/* <NavDropdown.Item
                       onClick={() => {
                         navigate("/setting");
                       }}
@@ -186,7 +186,7 @@ const NavBarNormal = () => {
                         <FaUser size={17} />
                         <span>Pengaturan</span>
                       </div>
-                    </NavDropdown.Item>
+                    </NavDropdown.Item> */}
                     <NavDropdown.Item>
                       <div
                         className="flex items-center gap-3"
