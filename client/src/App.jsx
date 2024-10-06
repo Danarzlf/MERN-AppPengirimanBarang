@@ -16,6 +16,7 @@ import CreateBook from "./pages/user/CreateBook";
 import CreatePickUp from "./pages/user/CreatePickUp";
 import Payment from "./pages/user/Payment";
 import Receipt from "./pages/user/Receipt";
+import AboutUs from "./pages/user/AboutUs";
 
 //Style
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -79,6 +80,7 @@ function App() {
         <Route path="/otp" element={<OTP />} />
         <Route path="/forget-password" element={<ForgetPassword />} />
         <Route path="/update-password" element={<UpdatePassword />} />
+        <Route path="/about-us" element={<AboutUs />} />
         <Route path="*" element={<Error404 />} />
       </Routes>
     </>

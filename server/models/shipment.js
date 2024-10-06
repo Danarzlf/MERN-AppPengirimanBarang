@@ -20,6 +20,7 @@ const shipmentSchema = new Schema({
   methodPayment: { type: String, trim: true },
   courierId: { type: Schema.Types.ObjectId, ref: 'Courier' },
   serviceId: { type: Schema.Types.ObjectId, ref: 'Service' },
+  pickupTime: { type: Date }, 
 }, { timestamps: true });
 
 const Shipment = mongoose.model('Shipment', shipmentSchema);

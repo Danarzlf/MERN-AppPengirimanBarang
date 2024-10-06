@@ -44,7 +44,7 @@ const NavBar = () => {
          
         <Stack direction="horizontal" gap={4}>
           <h2 className="me-4">
-            <img src="/vite.svg" alt="ChatApp Logo" className="logo-image" />
+            {/* <img src="/vite.svg" alt="ChatApp Logo" className="logo-image" /> */}
             <Link to="/" className="text-logo link-light text-decoration-none">
               KirimKan
             </Link>

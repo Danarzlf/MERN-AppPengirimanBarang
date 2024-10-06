@@ -2,4 +2,27 @@
     font-size: 13px;
   }
   
+  .suggestions-list {
+    position: absolute; /* Membuat daftar saran tidak mempengaruhi layout lain */
+    border: 1px solid #ccc;
+    max-height: 150px;
+    overflow-y: auto;
+    list-style-type: none;
+    padding: 0;
+    margin-top: 5px;
+    background-color: white;
+    color: #000;
+    font-size: 14px;
+    width: 200px;
+    z-index: 100; /* Pastikan saran muncul di atas komponen lainnya */
+}
+
+  .suggestions-list li {
+    padding: 8px;
+    cursor: pointer;
+  }
+  
+  .suggestions-list li:hover {
+    background-color: #f0f0f0;
+  }
   

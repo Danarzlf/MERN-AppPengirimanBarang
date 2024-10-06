@@ -5,6 +5,7 @@
   import { FaCheck } from 'react-icons/fa';
   import { AuthContext } from "../../context/AuthContext";
   import { ShipmentContext } from "../../context/ShipmentContext";
+  import { CityContext } from "../../context/CityContext";
   import { useLocation } from "react-router-dom"; // Import useLocation
   import NavBarNormal from "../../components/NavBar/NavBarNormal";
   import Footer from "../../components/Footer/Footer";
@@ -26,6 +27,13 @@
       showCheckModal,
     } = useContext(ShipmentContext);
 
+    const { 
+      cities, 
+      isLoading, 
+      error 
+    } = useContext(CityContext);
+
+    console.log("kota di create pickup", cities)
     // Mengambil shipmentId dari state yang diteruskan
     const location = useLocation();
     const { shipmentId , noTrack} = location.state || {};
@@ -69,6 +77,53 @@
     const [openBarang, setOpenBarang] = useState(true);
     const [useVolume, setUseVolume] = useState(false); // State for volume checkbox
     const [useInsurance, setUseInsurance] = useState(false); // State for insurance checkbox
+
+    const [suggestionsRecipient, setSuggestionsRecipient] = useState([]); // For recipient suggestions
+    const [suggestionsSender, setSuggestionsSender] = useState([]); // For sender suggestions
+
+  // Handle city change for recipient
+  const handleCityRecipientChange = (e) => {
+    const value = e.target.value;
+    setCityRecipient(value);
+
+    // Check if cities.data is available and filter for suggestions
+    if (cities && Array.isArray(cities.data) && value.length > 0) {
+      const filteredCities = cities.data.filter((cityItem) =>
+        cityItem.nameCity.toLowerCase().startsWith(value.toLowerCase())
+      );
+      setSuggestionsRecipient(filteredCities); // Set recipient city suggestions
+    } else {
+      setSuggestionsRecipient([]); // Clear suggestions if no matching cities
+    }
+  };
+
+  // Handle city change for sender
+  const handleCityChange = (e) => {
+    const value = e.target.value;
+    setCity(value);
+
+    // Check if cities.data is available and filter for suggestions
+    if (cities && Array.isArray(cities.data) && value.length > 0) {
+      const filteredCities = cities.data.filter((cityItem) =>
+        cityItem.nameCity.toLowerCase().startsWith(value.toLowerCase())
+      );
+      setSuggestionsSender(filteredCities); // Set sender city suggestions
+    } else {
+      setSuggestionsSender([]); // Clear suggestions if no matching cities
+    }
+  };
+
+    // Handle city selection for recipient
+    const handleRecipientCitySelect = (cityName) => {
+      setCityRecipient(cityName);
+      setSuggestionsRecipient([]); // Clear suggestions after selection
+    };
+
+    // Handle city selection for sender
+    const handleSenderCitySelect = (cityName) => {
+      setCity(cityName);
+      setSuggestionsSender([]); // Clear suggestions after selection
+    };
 
     console.log("ini delivery service",deliveryService)
 
@@ -290,19 +345,28 @@ const handleSubmitPackage = async (e) => {
                             </div>
                           </div>
                           <div className="mb-3">
-                            <label htmlFor="city" className="form-label">
-                              Kota<span style={{ color: 'red' }}>*</span>
+                            <label htmlFor="citySender" className="form-label">
+                              Kota Pengirim<span style={{ color: 'red' }}>*</span>
                             </label>
                             <input
                               type="text"
                               className="form-control"
-                              id="city"
+                              id="citySender"
                               value={city}
-                              onChange={(e) => setCity(e.target.value)}
-                              required
+                              onChange={handleCityChange}
                               disabled={isSenderCreated} 
                               autoComplete="off"
                             />
+                            {/* Display sender city suggestions */}
+                            {suggestionsSender.length > 0 && (
+                              <ul className="suggestions-list">
+                                {suggestionsSender.map((cityItem) => (
+                                  <li key={cityItem._id} onClick={() => handleSenderCitySelect(cityItem.nameCity)}>
+                                  {cityItem.nameCity}
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
                           </div>
                           <div className="mb-3">
                             <label htmlFor="address" className="form-label">
@@ -372,19 +436,28 @@ const handleSubmitPackage = async (e) => {
                             </div>
                           </div>
                           <div className="mb-3">
-                            <label htmlFor="city" className="form-label">
-                              Kota<span style={{ color: 'red' }}>*</span>
+                            <label htmlFor="cityRecipient" className="form-label">
+                              Kota Penerima<span style={{ color: 'red' }}>*</span>
                             </label>
                             <input
                               type="text"
                               className="form-control"
-                              id="city"
+                              id="cityRecipient"
                               value={cityRecipient}
-                              onChange={(e) => setCityRecipient(e.target.value)}
                               disabled={isRecipientCreated}
-                              required
+                              onChange={handleCityRecipientChange}
                               autoComplete="off"
                             />
+                            {/* Display recipient city suggestions */}
+                            {suggestionsRecipient.length > 0 && (
+                              <ul className="suggestions-list">
+                                {suggestionsRecipient.map((cityItem) => (
+                                  <li key={cityItem._id} onClick={() => handleRecipientCitySelect(cityItem.nameCity)}>
+                                    {cityItem.nameCity}
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
                           </div>
                           <div className="mb-3">
                             <label htmlFor="address" className="form-label">
@@ -664,7 +737,7 @@ const handleSubmitPackage = async (e) => {
                     </div>
                   </div>
                 </Collapse>
-                <p>Estimated Cost:</p>
+                <p>Biaya Ongkir:</p>
                        <p>{estimatedCost}IDR</p>
               </div>
             </div>

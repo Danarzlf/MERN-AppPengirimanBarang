@@ -14,7 +14,7 @@ export const TrackContextProvider = ({ children }) => {
 
   const handleTrackPackage = async () => {
     if (!trackingId) {
-      setError("Tracking number is required."); // Client-side validation
+      setError("Harap masukkan nomor resi"); // Client-side validation
       return;
     }
 
@@ -29,19 +29,14 @@ export const TrackContextProvider = ({ children }) => {
 
       const data = await response.json();
       setShipmentData(data);
-      localStorage.setItem("shipmentData", JSON.stringify(data)); // Save to localStorage
+      // localStorage.setItem("shipmentData", JSON.stringify(data)); // Save to localStorage
       setError(null); // Clear any previous errors
     } catch (error) {
       setError(error.message);
     }
   };
 
-  // Optional: Clear localStorage when the context is reset (if needed)
-  useEffect(() => {
-    return () => {
-      localStorage.removeItem("shipmentData");
-    };
-  }, []);
+  
 
   console.log("ini data shipment dari context", shipmentData);
   return (

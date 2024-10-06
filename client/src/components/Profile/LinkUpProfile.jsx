@@ -2,6 +2,7 @@ import { useState, useContext, useEffect } from "react";
 import { Button } from "react-bootstrap";
 import { ProfileContext } from "../../context/ProfileContext";
 import Table from 'react-bootstrap/Table';
+import Form from 'react-bootstrap/Form';
 import axios from 'axios'; // Import axios for API requests
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import '../../components/styles/Profile.css';
@@ -10,11 +11,13 @@ const LinkUpProfile = () => {
   const { userProfiles } = useContext(ProfileContext);
   const [showPesanan, setShowPesanan] = useState(true); // State to toggle between Pesanan and Riwayat
   const [shipments, setShipments] = useState([]); // State to store shipments data
-  const [error, setError] = useState(0); // State to handle errors
+  const [error, setError] = useState(""); // State to handle errors
+  const [searchTerm, setSearchTerm] = useState(""); // State for search input
 
   const navigate = useNavigate(); // Initialize useNavigate
 
   console.log("shipment di pesanan saya", shipments)
+  
   // Fetch shipments data from API
   const fetchShipments = async () => {
     try {
@@ -42,8 +45,17 @@ const LinkUpProfile = () => {
     fetchShipments(); // Call the fetchShipments function when the component mounts
   }, []);
 
-  // Filter shipments to include only those with a non-null costShipment
-  const filteredShipments = shipments.filter(shipment => shipment.costShipment !== 0);
+  // Filter shipments to include only those with a non-null and non-zero costShipment
+  const filteredShipments = shipments.filter(shipment => 
+    shipment.costShipment != null && shipment.costShipment !== 0
+  );
+
+  // Handle search logic
+  const searchResults = filteredShipments.filter(shipment =>
+    shipment.noTrack?.toLowerCase().includes(searchTerm.toLowerCase()) || // Filter by tracking number
+    shipment.type?.toLowerCase().includes(searchTerm.toLowerCase()) || // Filter by type
+    shipment.status?.toLowerCase().includes(searchTerm.toLowerCase()) // Filter by status
+  );
 
   return (
     <>
@@ -65,26 +77,38 @@ const LinkUpProfile = () => {
           </div> */}
           <div className="profile-booking">
             {/* {error && <p>{error}</p>}  */}
+            
             {showPesanan ? (
               <>
                 <h5>Pesanan</h5>
-                <p style={{fontSize:'14px'}}>Pesanan kamu akan tampil disini</p>
+                <p style={{ fontSize: '14px' }}>Pesanan kamu akan tampil disini</p>
+                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                  <Form.Control
+                    size="sm"
+                    type="text"
+                    placeholder="Cari"
+                    value={searchTerm} // Bind the input value to searchTerm state
+                    onChange={(e) => setSearchTerm(e.target.value)} // Update searchTerm state on input change
+                    style={{ width: '200px' }} // Set custom width here
+                  />
+                </div>
                 <Table hover className="mt-4">
                   <thead>
                     <tr>
-                      <th></th>
+                      {/* <th></th> */}
                       <th>no resi</th>
                       <th>tipe</th>
                       <th>status</th>
                       <th>tanggal</th>
-                      <th>biaya</th>
+                      <th>ongkir</th>
+                      <th>waktu paket diambil</th>
                       <th>aksi</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredShipments.map((shipment, index) => (
+                    {searchResults.map((shipment, index) => (
                       <tr key={index}>
-                        <td>{index + 1}</td>
+                        {/* <td>{index + 1}</td> */}
                         <td>{shipment?.noTrack}</td>
                         <td>{shipment?.type}</td>
                         <td>{shipment?.status}</td>
@@ -97,7 +121,22 @@ const LinkUpProfile = () => {
                         </td>
                         <td>{shipment?.costShipment}</td>
                         <td>
-                          <Button style={{backgroundColor:"var(--main-color)", border:"none"}} onClick={() => navigate(`/receipt/${shipment.noTrack}`)}>Detail</Button>
+                          {shipment?.pickupTime
+                            ? `${new Date(shipment.pickupTime).toLocaleDateString('id-ID', {
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: '2-digit',
+                              }).replace(/\//g, '-')}` +
+                              ' ' +
+                              `${new Date(shipment.pickupTime).toLocaleTimeString('id-ID', {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                              })}`
+                            : 'N/A'}
+                        </td>
+                        <td>
+                          <Button className="me-2" style={{ backgroundColor: "var(--main-color)", border: "none" }}>Detail</Button>
+                          <Button style={{ backgroundColor: "var(--main-color)", border: "none" }} onClick={() => navigate(`/receipt/${shipment.noTrack}`)}>Cek Resi</Button>
                         </td>
                       </tr>
                     ))}
@@ -118,7 +157,7 @@ const LinkUpProfile = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredShipments.map((shipment, index) => (
+                    {searchResults.map((shipment, index) => (
                       <tr key={index}>
                         <td>{shipment.trackingNumber}</td>
                         <td>{shipment.bookingNumber}</td>
@@ -139,4 +178,4 @@ const LinkUpProfile = () => {
   );
 };
 
-export default LinkUpProfile;    
+export default LinkUpProfile;

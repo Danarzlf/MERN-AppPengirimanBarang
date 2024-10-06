@@ -37,6 +37,10 @@ const About = () => {
       navigate(`/receipt/${trackingId}`); // Correctly format the URL to navigate
     }
   };
+  
+  const handleClick = () => {
+    navigate('/about-us'); // Arahkan ke /about-us saat tombol diklik
+  };
 
   return (
     <section id="about">
@@ -52,7 +56,7 @@ const About = () => {
             <p>
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione aliquid eos iusto placeat natus aspernatur.
             </p>
-            <button className="btn mt-4" style={{backgroundColor:'#3884c4', color:"white"}}>Selengkapnya</button>
+            <button className="btn mt-4" style={{backgroundColor:'#3884c4', color:"white"}} onClick={handleClick}>Selengkapnya</button>
           </div>
           <div className="col-lg-6 about-package" data-aos="zoom-out" data-aos-delay={200}>
             <div>
@@ -105,10 +109,12 @@ const About = () => {
                         </tr>
                       </tbody>
                     </Table>
-                    <div className="text-end">
-                      <Button className="me-2" onClick={handleViewReceipt} style={{backgroundColor:'#3884c4', border:'none'}}>Lihat Resi</Button>
-                      <Button className="btn-dark">Reset</Button>
-                    </div>
+                    <div className="d-flex justify-content-end">
+                        <Button className="btn-dark me-auto">Reset</Button> {/* Tombol Reset di kiri */}
+                        <Button className="me-1" onClick={handleViewReceipt} style={{ backgroundColor: '#3884c4', border: 'none' }}>Lihat Resi</Button>
+                        <Button className="" style={{ backgroundColor: '#3884c4', border: 'none' }}>Detail</Button>
+                      </div>
+
                   </>
                 ) : error ? (
                   <p className="text-danger mt-3">{error}</p>

@@ -251,7 +251,7 @@ const Estimation = () => {
                                 </div>
                             )}
 
-                            <button type="submit" className="btn btn-primary mt-4" style={{ width: "100%" }}>Cek Estimasi</button>
+                            <button type="submit" className="btn btn-primary mt-4" style={{ width: "100%", backgroundColor:"#002754", border:"none" }}>Cek Estimasi</button>
                         </form>
                     </div>
                 </div>

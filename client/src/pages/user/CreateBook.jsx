@@ -9,8 +9,8 @@ import { useNavigate } from "react-router-dom";
 import "../../components/styles/CreateBook.css";
 
 // Contoh URL gambar, ganti dengan path atau URL gambar yang sebenarnya
-const pickupImage = "dropp.jpg";
-const dropoffImage = "dropp.jpg";
+const pickupImage = "pickup-.png";
+const dropoffImage = "dropoff-.png";
 
 const CreateBook = () => {
   const { userProfiles } = useContext(ProfileContext);

@@ -7,6 +7,7 @@ const Package = require("../models/package");
 const Service = require("../models/service");
 const User = require("../models/user");
 const Payment = require("../models/payment");
+const cron = require("node-cron");
 
 const createShipment = async (req, res, next) => {
   try {
@@ -277,6 +278,7 @@ const getAllShipments = async (req, res, next) => {
           costShipment: { $first: "$costShipment" },
           createdAt: { $first: "$createdAt" },
           status: { $first: "$status" },
+          pickupTime: { $first: "$pickupTime" },
           // Tambahkan field lain yang Anda butuhkan
         },
       },
@@ -295,7 +297,7 @@ const getAllShipments = async (req, res, next) => {
 const updateShipmentById = async (req, res, next) => {
   try {
     const shipmentId = req.params.id;
-    const { noTrack, type, status, courierId, serviceId, costShipment, methodPayment } = req.body;
+    const { noTrack, type, status, courierId, serviceId, costShipment, methodPayment, pickupTime } = req.body;
 
 
 
@@ -310,6 +312,7 @@ const updateShipmentById = async (req, res, next) => {
         serviceId,
         costShipment,
         methodPayment,
+        pickupTime,
       },
       { new: true } // to return the updated shipment
     );
@@ -420,7 +423,7 @@ const getShipmentByNoTrack = async (req, res, next) => {
     if (shipment.length === 0) {
       return res.status(404).json({
         status: false,
-        message: "Shipment not found.",
+        message: "Pengiriman tidak ditemukan",
         data: null,
       });
     }
@@ -438,7 +441,26 @@ const getShipmentByNoTrack = async (req, res, next) => {
 };
 
 
+// Schedule a task to run every minute
+const scheduleShipmentCleanup = () => {
+  cron.schedule("* * * * *", async () => {
+    console.log("Cron job running..."); // Log to verify if cron job is running
+    try {
+      // Get the current time minus 3 hours
+      const threeHoursAgo = new Date(Date.now() - 3 * 60 * 60 * 1000);
 
+      // Find and delete shipments where costShipment is 0 or null and created more than 3 hours ago
+      const deletedShipments = await Shipment.deleteMany({
+        $or: [{ costShipment: null }, { costShipment: 0 }],
+        createdAt: { $lte: threeHoursAgo },
+      });
+
+      console.log(`${deletedShipments.deletedCount} shipments deleted.`);
+    } catch (error) {
+      console.error("Error deleting shipments:", error);
+    }
+  });
+};
 
 module.exports = {
   createShipment,
