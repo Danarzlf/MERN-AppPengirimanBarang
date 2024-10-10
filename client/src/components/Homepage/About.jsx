@@ -42,6 +42,10 @@ const About = () => {
     navigate('/about-us'); // Arahkan ke /about-us saat tombol diklik
   };
 
+  const handleClickEstimation = () => {
+    navigate('/cost-estimation'); // Arahkan ke /about-us saat tombol diklik
+  };
+
   return (
     <section id="about">
       <div className="container">
@@ -112,7 +116,7 @@ const About = () => {
                     <div className="d-flex justify-content-end">
                         <Button className="btn-dark me-auto">Reset</Button> {/* Tombol Reset di kiri */}
                         <Button className="me-1" onClick={handleViewReceipt} style={{ backgroundColor: '#3884c4', border: 'none' }}>Lihat Resi</Button>
-                        <Button className="" style={{ backgroundColor: '#3884c4', border: 'none' }}>Detail</Button>
+                        {/* <Button className="" style={{ backgroundColor: '#3884c4', border: 'none' }}>Detail</Button> */}
                       </div>
 
                   </>
@@ -145,8 +149,8 @@ const About = () => {
                     <Form.Control type="number" />
                   </Form.Group>
 
-                  <Button variant="primary" className="btn-price" type="submit">
-                    Submit
+                  <Button variant="primary" className="btn-price" onClick={handleClickEstimation} style={{backgroundColor: "#3884c4", color:"white", border:'none'}} type="submit">
+                    Cek Ongkir
                   </Button>
                 </Form>
               </div>

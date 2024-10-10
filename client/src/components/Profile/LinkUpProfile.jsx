@@ -6,6 +6,7 @@ import Form from 'react-bootstrap/Form';
 import axios from 'axios'; // Import axios for API requests
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import '../../components/styles/Profile.css';
+import Cookies from 'js-cookie';
 
 const LinkUpProfile = () => {
   const { userProfiles } = useContext(ProfileContext);
@@ -21,7 +22,8 @@ const LinkUpProfile = () => {
   // Fetch shipments data from API
   const fetchShipments = async () => {
     try {
-      const user = JSON.parse(localStorage.getItem("User")); // Get the User object from local storage
+      const userCookie = Cookies.get("User"); // Get the User cookie
+      const user = userCookie ? JSON.parse(userCookie) : null; // Get the User object from local storage
   
       if (!user || !user.data || !user.data.token) {
         throw new Error("User is not authenticated"); // Handle case where user or token is missing
@@ -35,7 +37,12 @@ const LinkUpProfile = () => {
         },
       });
 
-      setShipments(response.data.data); // Assuming response.data.data contains the shipments
+      // Assuming response.data.data contains the shipments
+      const sortedShipments = response.data.data.sort((a, b) => {
+        return new Date(b.createdAt) - new Date(a.createdAt); // Sort by creation date in descending order
+      });
+
+      setShipments(sortedShipments);
     } catch (err) {
       setError("Failed to fetch shipments. Please try again.");
     }
@@ -54,7 +61,7 @@ const LinkUpProfile = () => {
   const searchResults = filteredShipments.filter(shipment =>
     shipment.noTrack?.toLowerCase().includes(searchTerm.toLowerCase()) || // Filter by tracking number
     shipment.type?.toLowerCase().includes(searchTerm.toLowerCase()) || // Filter by type
-    shipment.status?.toLowerCase().includes(searchTerm.toLowerCase()) // Filter by status
+    shipment.payments?.status?.toLowerCase().includes(searchTerm.toLowerCase()) // Filter by status
   );
 
   return (
@@ -98,10 +105,10 @@ const LinkUpProfile = () => {
                       {/* <th></th> */}
                       <th>no resi</th>
                       <th>tipe</th>
-                      <th>status</th>
                       <th>tanggal</th>
                       <th>ongkir</th>
                       <th>waktu paket diambil</th>
+                      <th>status</th>
                       <th>aksi</th>
                     </tr>
                   </thead>
@@ -111,7 +118,6 @@ const LinkUpProfile = () => {
                         {/* <td>{index + 1}</td> */}
                         <td>{shipment?.noTrack}</td>
                         <td>{shipment?.type}</td>
-                        <td>{shipment?.status}</td>
                         <td>
                           {new Date(shipment?.createdAt).toLocaleDateString('id-ID', {
                             day: '2-digit',
@@ -127,7 +133,7 @@ const LinkUpProfile = () => {
                                 month: '2-digit',
                                 year: '2-digit',
                               }).replace(/\//g, '-')}` +
-                              ' ' +
+                              ' jam ' +
                               `${new Date(shipment.pickupTime).toLocaleTimeString('id-ID', {
                                 hour: '2-digit',
                                 minute: '2-digit',
@@ -135,7 +141,18 @@ const LinkUpProfile = () => {
                             : 'N/A'}
                         </td>
                         <td>
-                          <Button className="me-2" style={{ backgroundColor: "var(--main-color)", border: "none" }}>Detail</Button>
+                          <Button
+                            style={{
+                              backgroundColor: shipment?.payments?.status === 'settlement' ? 'green' : 'red',
+                              color: 'white',
+                              border: 'none',
+                            }}
+                          >
+                            {shipment?.payments?.status}
+                          </Button>
+                        </td>
+                        <td>
+                          {/* <Button className="me-2" style={{ backgroundColor: "var(--main-color)", border: "none" }}>Detail</Button> */}
                           <Button style={{ backgroundColor: "var(--main-color)", border: "none" }} onClick={() => navigate(`/receipt/${shipment.noTrack}`)}>Cek Resi</Button>
                         </td>
                       </tr>

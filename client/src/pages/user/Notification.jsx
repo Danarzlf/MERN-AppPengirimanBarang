@@ -4,6 +4,7 @@ import { formatDistanceToNow } from "date-fns";
 import { id } from "date-fns/locale";
 import NotificationDeleteModal from "../../components/Modals/NotificationDeleteModal";
 import "../../components/styles/Notification.css";
+import Cookies from "js-cookie";
 
 const Notification = () => {
   const [notifications, setNotifications] = useState([]);
@@ -14,7 +15,8 @@ const Notification = () => {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const user = JSON.parse(localStorage.getItem("User"));
+        const userCookie = Cookies.get("User"); // Get the User cookie
+        const user = userCookie ? JSON.parse(userCookie) : null; 
         const response = await fetch(
           "http://localhost:8000/api/v1/notification",
           {
@@ -26,6 +28,7 @@ const Notification = () => {
         );
 
         const data = await response.json();
+        console.log('asda',user)
 
         if (data.status) {
           setNotifications(data.data.notifications.reverse());
@@ -60,7 +63,8 @@ const Notification = () => {
 
   const handleDeleteNotification = async () => {
     try {
-      const user = JSON.parse(localStorage.getItem("User"));
+      const userCookie = Cookies.get("User"); // Get the User cookie
+      const user = userCookie ? JSON.parse(userCookie) : null;
       const response = await fetch(`http://localhost:8000/api/v1/notification/${selectedNotification._id}`, {
         method: "DELETE",
         headers: {

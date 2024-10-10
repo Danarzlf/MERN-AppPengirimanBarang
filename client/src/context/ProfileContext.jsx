@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect } from "react";
 import { baseUrl, getRequest, putRequest } from "../utils/service";
 import { API_ENDPOINT } from "../utils/api-endpoint";
+import Cookies from "js-cookie"
 
 export const ProfileContext = createContext();
 
@@ -52,7 +53,8 @@ export const ProfileContextProvider = ({ children }) => {
       formDataObj.append("city", formData.city);
       formDataObj.append("image", formData.image);
 
-      const user = JSON.parse(localStorage.getItem("User"));
+      const userCookie = Cookies.get("User"); // Get the User cookie
+      const user = userCookie ? JSON.parse(userCookie) : null;
 
       const response = await putRequest(
         `${baseUrl}${API_ENDPOINT.UPDATE_PROFILE}`,
@@ -78,7 +80,8 @@ export const ProfileContextProvider = ({ children }) => {
 
   useEffect(() => {
     const getUserProfiles = async () => {
-      const user = JSON.parse(localStorage.getItem("User"));
+      const userCookie = Cookies.get("User"); // Get the User cookie
+      const user = userCookie ? JSON.parse(userCookie) : null;
 
       try {
         const response = await getRequest(

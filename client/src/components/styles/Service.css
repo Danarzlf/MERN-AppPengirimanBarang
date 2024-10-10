@@ -9,4 +9,19 @@
     width: 1100px;
     margin: auto;
     margin-top: 70px;
+    /* padding: 20px 0; */
+}
+
+  .marquee-image {
+    margin: 0 60px; /* Set consistent spacing between each image */
+  }
+  
+#find-us{
+    /* background-color: var(--main-color); */
+    padding-top: 80px;
+    padding-bottom: 80px;
+}
+
+#find-us .container {
+    
 }

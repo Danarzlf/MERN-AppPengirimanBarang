@@ -1,106 +1,149 @@
-const Payment = require("../models/payment");
-const Shipment = require("../models/shipment");
+const midtransClient = require('midtrans-client');
+const Payment = require('../models/payment');
+const Shipment = require('../models/shipment');
+const User = require('../models/user');
 
+// Inisialisasi Midtrans
+const snap = new midtransClient.Snap({
+  isProduction: false, // Ubah ke true jika di production
+  serverKey: process.env.MIDTRANS_SERVER_KEY,
+  clientKey: process.env.MIDTRANS_CLIENT_KEY,
+});
+
+// Membuat transaksi pembayaran terkait dengan Shipment
 const createPayment = async (req, res, next) => {
   try {
-    const { shipmentId, amount, payment_method } = req.body;
+    const { userId, shipmentId, amount } = req.body;
 
-    // Validate required fields
-    if (!shipmentId || !amount || !payment_method) {
+    // Validasi userId, shipmentId, dan jumlah pembayaran
+    if (!userId || !shipmentId || !amount) {
       return res.status(400).json({
         status: false,
-        message: "shipment ID, amount, and payment method are required.",
+        message: 'User ID, Shipment ID, and amount are required.',
         data: null,
       });
     }
 
-    // Check if shipment exists
-    const existingShipment = await Shipment.findById(shipmentId);
-    if (!existingShipment) {
+    const user = await User.findById(userId);
+    if (!user) {
       return res.status(404).json({
         status: false,
-        message: "shipment not found.",
+        message: 'User not found.',
         data: null,
       });
     }
 
-    // Create new payment record
-    const newPayment = await Payment.create({
+    const shipment = await Shipment.findById(shipmentId);
+    if (!shipment) {
+      return res.status(404).json({
+        status: false,
+        message: 'Shipment not found.',
+        data: null,
+      });
+    }
+
+    // Cek apakah sudah ada pembayaran untuk userId dan shipmentId yang sama
+    const existingPayment = await Payment.findOne({ userId, shipmentId });
+    if (existingPayment) {
+      // Jika sudah ada pembayaran, kembalikan redirect_url yang ada
+      // const redirectUrl = `https://app.midtrans.com/snap/v4/redirection/${existingPayment.tokenRedirect}#/payment-list`;
+      const redirectUrl = `https://app.sandbox.midtrans.com/snap/v4/redirection/${existingPayment.tokenRedirect}#/payment-list`;
+      return res.status(200).json({
+        status: true,
+        message: 'Payment already exists',
+        data: { redirect_url: redirectUrl },
+      });
+    }
+
+    const orderId = `ORDER-${Date.now()}`;
+
+    // Parameter transaksi untuk Midtrans
+    const parameter = {
+      transaction_details: {
+        order_id: orderId,
+        gross_amount: amount,  
+      },
+      customer_details: {
+        first_name: user.firstName,
+        last_name: user.lastName,
+        email: user.email,
+      },
+    };
+
+    const transaction = await snap.createTransaction(parameter);
+
+    // Simpan informasi pembayaran ke dalam database
+    const payment = await Payment.create({
+      orderId,
       shipmentId,
-      amount,
-      payment_method,
+      userId,
+      amount, // Ini adalah jumlah yang dikenakan
+      status: 'pending',
+      paymentType: null,
+      tokenRedirect: transaction.token,
+      transactionTime: new Date(),
     });
 
     res.status(201).json({
       status: true,
-      message: "Payment created successfully",
-      data: newPayment,
+      message: 'Payment created successfully',
+      data: { payment, redirect_url: transaction.redirect_url },
     });
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    next(error);
   }
 };
 
-const updatePayment = async (req, res, next) => {
+
+
+const handlePaymentNotification = async (req, res, next) => {
   try {
-    const paymentId = req.params.paymentId; // Mengambil ID pembayaran dari parameter rute
-    const updateData = req.body; // Data baru untuk diperbarui
-
-    // Periksa apakah pembayaran ada
-    const existingPayment = await Payment.findById(paymentId);
-    if (!existingPayment) {
-      return res.status(404).json({
-        status: false,
-        message: "Payment not found.",
-        data: null,
-      });
+    // Log request body untuk debugging
+    console.log("Received notification:", req.body);
+  
+    let notification = {
+      currency: req.body.currency,
+      fraud_status: req.body.fraud_status,
+      gross_amount: req.body.gross_amount,
+      order_id: req.body.order_id,
+      payment_type: req.body.payment_type,
+      status_code: req.body.status_code,
+      status_message: req.body.status_message,
+      transaction_id: req.body.transaction_id,
+      transaction_status: req.body.transaction_status,
+      transaction_time: req.body.transaction_time,
+      settlement_time: req.body.settlement_time,
+      merchant_id: req.body.merchant_id,
+    };
+    
+    // Panggil API notifikasi Midtrans
+    let data = await snap.transaction.notification(notification);
+    console.log("Midtrans response:", data);
+    
+    // Cek dan update status pembayaran di database
+    const payment = await Payment.findOne({ orderId: notification.order_id });
+    if (!payment) {
+      console.error("Payment not found for orderId:", notification.order_id);
+      return res.status(404).json({ status: false, message: 'Payment not found' });
     }
-
-    // Periksa apakah ada perubahan yang diminta pada pengiriman terkait
-    if (updateData.shipmentId) {
-      // Periksa apakah pengiriman yang diminta ada
-      const existingShipment = await Shipment.findById(updateData.shipmentId);
-      if (!existingShipment) {
-        return res.status(404).json({
-          status: false,
-          message: "Shipment not found.",
-          data: null,
-        });
-      }
-    }
-
-    // Lakukan pembaruan pada pembayaran
-    const updatedPayment = await Payment.findByIdAndUpdate(paymentId, updateData, {
-      new: true,
-    });
-
-    res.status(200).json({
-      status: true,
-      message: "Payment updated successfully",
-      data: updatedPayment,
-    });
-  } catch (err) {
-    next(err);
+  
+    // Update status pembayaran
+    payment.status = notification.transaction_status;
+    payment.settlement_time = notification.settlement_time;
+    payment.paymentType = notification.payment_type;
+    await payment.save();
+  
+    res.status(200).json({ status: true, message: 'Payment status updated successfully' });
+  } catch (error) {
+    next(error);
   }
 };
 
-const getAllPayments = async (req, res, next) => {
-  try {
-    // Mengambil semua pembayaran dari koleksi Payment
-    const payments = await Payment.find();
 
-    res.status(200).json({
-      status: true,
-      message: "Payments retrieved successfully",
-      data: payments,
-    });
-  } catch (err) {
-    next(err);
-  }
-};
+
 
 module.exports = {
   createPayment,
-  updatePayment,
-  getAllPayments
+  handlePaymentNotification
+
 };

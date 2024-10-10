@@ -18,6 +18,8 @@ const dropPointRoute = require("./routes/dropPoint.routes");
 const cityRoute = require("./routes/city.routes");
 const notificationRoute = require("./routes/notification.routes");
 const costEstimationRoute = require("./routes/costEstimation.routes");
+const cron = require("node-cron");
+const Shipment = require("./models/shipment");
 
 const app = express();
 
@@ -66,6 +68,38 @@ app.use((err, req, res, next) => {
     data: null,
   });
 });
+
+
+// Cron job to clean up shipments older than 3 hours with a costShipment of null or 0
+const scheduleShipmentCleanup = () => {
+  console.log("Initializing cron job...");
+
+  cron.schedule("0 * * * *", async () => {
+    console.log("Cron job running...");
+
+    try {
+      const threeHoursAgo = new Date(Date.now() - 3 * 60 * 60 * 1000);
+      console.log(`Deleting shipments older than: ${threeHoursAgo}`);
+
+      const deletedShipments = await Shipment.deleteMany({
+        $or: [{ costShipment: null }, { costShipment: 0 }],
+        createdAt: { $lte: threeHoursAgo },
+      });
+
+      console.log(`${deletedShipments.deletedCount} shipments deleted.`);
+    } catch (error) {
+      console.error("Error deleting shipments:", error);
+    }
+  }, {
+    timezone: "Asia/Jakarta", // Ensures the cron job runs according to Jakarta's timezone
+  });
+};
+
+// Call the cron job function to start the scheduled task
+scheduleShipmentCleanup();
+
+
+
 
 const PORT = process.env.PORT || 7000;
 const MONGOURL = process.env.MONGO_URL;

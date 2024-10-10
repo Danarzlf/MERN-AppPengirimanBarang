@@ -1,17 +1,26 @@
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { Button } from 'react-bootstrap';
+import { ProfileContext } from "../../context/ProfileContext";
 import NavBarNormal from "../../components/NavBar/NavBarNormal";
 import Footer from "../../components/Footer/Footer";
 import "../../components/styles/Receipt.css";
+import Cookies from "js-cookie";
 
 const Receipt = () => {
+  const { userProfiles } = useContext(ProfileContext);
   const { trackingId } = useParams(); // Get trackingId from URL
   const [shipmentData, setShipmentData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  const user = localStorage.getItem("User");
+  const user = Cookies.get("User");
   const isAuthenticated = user !== null;
+
+  // Ambil userId dari userProfiles jika pengguna terautentikasi
+  const userId = isAuthenticated ? userProfiles?._id : null;
+
+  // console.log('ini profile di receipt', userProfiles);
+  console.log('ini shipdi receipt', shipmentData);
 
   useEffect(() => {
     const fetchShipmentData = async () => {
@@ -32,6 +41,51 @@ const Receipt = () => {
     fetchShipmentData();
   }, [trackingId]); // Use trackingId here
 
+  const handlePayment = async () => {
+    if (!shipmentData || !userId) return; // Pastikan userId ada sebelum melanjutkan
+  
+    const { noTrack, costShipment } = shipmentData.data.shipment;
+    const shipmentId = shipmentData.data.shipment._id;
+  
+    // console.log("User ID:", userId);
+    // console.log("Shipment ID:", shipmentId);
+    // console.log("Amount:", costShipment);
+  
+    // Mengirim permintaan
+    try {
+      const response = await fetch("http://localhost:8000/api/v1/payments", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: userId,
+          shipmentId: shipmentId,
+          amount: costShipment,
+        }),
+      });
+  
+      // Log the response status and content
+      // console.log("Response status:", response.status);
+      const result = await response.json();
+      console.log("Response from payment API:", result);
+  
+      // Correctly check for redirect_url
+      const redirectUrl = result.data?.redirect_url; // Access redirect_url from the correct path
+      if (redirectUrl) {
+        window.location.href = redirectUrl;
+      } else {
+        alert("Failed to initiate payment: No redirect URL found.");
+        console.error("Payment response did not contain a redirect URL:", result);
+      }
+    } catch (err) {
+      console.error("Error during payment process:", err);
+      alert(`An error occurred while processing the payment: ${err.message}`);
+    }
+  };
+  
+  
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -40,7 +94,6 @@ const Receipt = () => {
     return <div>Error: {error}</div>;
   }
 
-console.log("ini dari receipt data", shipmentData)
   return (
     <>
       <NavBarNormal />
@@ -49,7 +102,7 @@ console.log("ini dari receipt data", shipmentData)
           <div className="panel-body">
             <div className="row m-0">
               <div className="col-md-2 col-sm-2 text-left">
-                <h4><strong>LOGO</strong></h4>
+                <h4><strong>KirimKan</strong></h4>
               </div>
               <div className="col-md-10 col-sm-10 text-center">
                 <p><strong>{shipmentData?.data?.shipment?.noTrack}</strong></p> {/* Display tracking ID from URL */}
@@ -99,7 +152,7 @@ console.log("ini dari receipt data", shipmentData)
                       <td>{pkg.weight} &#40;kg&#41;</td>
                       <td>{pkg.quantity}</td>
                     </tr>
-                  ))}
+                  ))} 
                 </tbody>
               </table>
             </div>
@@ -129,12 +182,31 @@ console.log("ini dari receipt data", shipmentData)
                 <i className="fa fa-check"></i>Kembali
               </a>
             )}
-            
-            {isAuthenticated && (
-              <a className="btn btn-primary me-2" href="/profile">
-                <i className="fa fa-check"></i>Lihat Pesanan Saya
-              </a>
-            )}
+           {isAuthenticated && (
+                  <>
+                    <a className="btn btn-primary me-2" href="/profile">
+                      <i className="fa fa-check"></i>Lihat Pesanan Saya
+                    </a>
+                    <Button
+                      className="btn me-2"
+                      style={{ backgroundColor: '#3884c4', color: 'white', border: 'none' }}
+                      onClick={handlePayment}
+                      disabled={
+                        shipmentData?.data?.shipment?.payments?.status === 'settlement' || 
+                        shipmentData?.data?.shipment?.payments?.status === 'expire'
+                      }
+                    >
+                      {shipmentData?.data?.shipment?.payments?.status === 'settlement' 
+                        ? 'Sudah Bayar' 
+                        : shipmentData?.data?.shipment?.payments?.status === 'expire' 
+                        ? 'Expire' 
+                        : shipmentData?.data?.shipment?.payments?.status === 'pending' 
+                        ? 'Bayar Sekarang' 
+                        : 'Bayar Sekarang'}
+                    </Button>
+
+                  </>
+                )}
           </div>
         </div>
       </div>

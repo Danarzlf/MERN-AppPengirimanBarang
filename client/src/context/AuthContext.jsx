@@ -41,25 +41,26 @@ export const AuthContextProvider = ({ children }) => {
 
   //protecting route agar kalo direfresh data user tetep ada
   //pakai local
-  useEffect(() => {
-    const user = localStorage.getItem("User");
+  // useEffect(() => {
+  //   const user = localStorage.getItem("User");
 
-    setUser(JSON.parse(user));
-  }, []);
+  //   setUser(JSON.parse(user));
+  // }, []);
 
   //pakai cookie
-  // useEffect(() => {
-  //   const user = Cookies.get("User");
-  //   // console.log("User dari Cookie:", user);
+  useEffect(() => {
+    const userCookie = Cookies.get("User");
 
-  //   try {
-  //     const parsedUser = JSON.parse(user);
-  //     setUser(parsedUser);
-  //   } catch (error) {
-  //     console.error("Error saat parsing user:", error);
-  //     // Handle error disini, seperti menetapkan state pengguna default atau menghapus cookie
-  //   }
-  // }, []);
+    if (userCookie) {
+      try {
+        const parsedUser = JSON.parse(userCookie);
+        setUser(parsedUser);
+      } catch (error) {
+        console.error("Error parsing user from cookie:", error);
+        Cookies.remove("User"); // Remove invalid cookie if parsing fails
+      }
+    }
+  }, []);
 
   const updateRegisterInfo = useCallback((info) => {
     setRegisterInfo(info);
@@ -121,7 +122,8 @@ export const AuthContextProvider = ({ children }) => {
         return;
       }
 
-      localStorage.setItem("User", JSON.stringify(response));
+      // localStorage.setItem("User", JSON.stringify(response));
+      Cookies.set("User", JSON.stringify(response), { expires: 7 });
       setUser(response);
 
       // Assuming your response contains a 'successMessage' field
@@ -198,8 +200,8 @@ export const AuthContextProvider = ({ children }) => {
     // Hide the logout confirmation modal
     hideLogoutModal();
 
-    // Perform actual logout
-    localStorage.removeItem("User");
+    Cookies.remove("User"); // Remove the User cookie
+    Cookies.remove("token"); // Remove the User cookie
     setUser(null);
 
     navigate("/login");

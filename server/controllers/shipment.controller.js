@@ -165,6 +165,9 @@ const deleteShipment = async (req, res, next) => {
     // Hapus data service yang terkait
     await Service.deleteMany({ shipmentId: shipmentId });
 
+    // Hapus data service yang terkait
+    await Payment.deleteMany({ shipmentId: shipmentId });
+
     // Hapus pengiriman berdasarkan ID
     const deletedShipment = await Shipment.findByIdAndDelete(shipmentId);
 
@@ -250,7 +253,9 @@ const getAllShipments = async (req, res, next) => {
           as: "payments",
         },
       },
-      // Lookup courier
+      {
+        $unwind: { path: "$payments", preserveNullAndEmptyArrays: true },
+      },
       {
         $lookup: {
           from: "couriers",
@@ -406,7 +411,9 @@ const getShipmentByNoTrack = async (req, res, next) => {
           as: "payments",
         },
       },
-      // Lookup courier
+      {
+        $unwind: { path: "$payments", preserveNullAndEmptyArrays: true },
+      },
       {
         $lookup: {
           from: "couriers",
@@ -440,27 +447,6 @@ const getShipmentByNoTrack = async (req, res, next) => {
   }
 };
 
-
-// Schedule a task to run every minute
-const scheduleShipmentCleanup = () => {
-  cron.schedule("* * * * *", async () => {
-    console.log("Cron job running..."); // Log to verify if cron job is running
-    try {
-      // Get the current time minus 3 hours
-      const threeHoursAgo = new Date(Date.now() - 3 * 60 * 60 * 1000);
-
-      // Find and delete shipments where costShipment is 0 or null and created more than 3 hours ago
-      const deletedShipments = await Shipment.deleteMany({
-        $or: [{ costShipment: null }, { costShipment: 0 }],
-        createdAt: { $lte: threeHoursAgo },
-      });
-
-      console.log(`${deletedShipments.deletedCount} shipments deleted.`);
-    } catch (error) {
-      console.error("Error deleting shipments:", error);
-    }
-  });
-};
 
 module.exports = {
   createShipment,

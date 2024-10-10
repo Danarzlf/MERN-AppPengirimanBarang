@@ -6,7 +6,9 @@
   import { AuthContext } from "../../context/AuthContext";
   import { ShipmentContext } from "../../context/ShipmentContext";
   import { CityContext } from "../../context/CityContext";
+  import { ProfileContext } from "../../context/ProfileContext";
   import { useLocation } from "react-router-dom"; // Import useLocation
+  import Form from 'react-bootstrap/Form';
   import NavBarNormal from "../../components/NavBar/NavBarNormal";
   import Footer from "../../components/Footer/Footer";
   import CheckModal from "../../components/Modals/CheckModal";
@@ -20,6 +22,10 @@
       hideLogoutModal,
       confirmLogout,
     } = useContext(AuthContext);
+
+    const { 
+      userProfiles 
+    } = useContext(ProfileContext);
 
     const {
       isCheckModalVisible,
@@ -39,8 +45,10 @@
     const { shipmentId , noTrack} = location.state || {};
 
 
-    console.log(shipmentId)
-    console.log("ini no track", noTrack)
+    // console.log(shipmentId)
+    // console.log("ini no track", noTrack)
+    console.log("userprofiles dipickup", userProfiles)
+
     //sender
     const [name, setName] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
@@ -81,6 +89,27 @@
     const [suggestionsRecipient, setSuggestionsRecipient] = useState([]); // For recipient suggestions
     const [suggestionsSender, setSuggestionsSender] = useState([]); // For sender suggestions
 
+    const [useAccountData, setUseAccountData] = useState(false);
+
+    const handleUseAccountDataChange = (e) => {
+      const isChecked = e.target.checked;
+      setUseAccountData(isChecked);
+    
+      if (isChecked && userProfiles) {
+        // Populate the form fields with userProfiles data
+        setName(userProfiles.userProfile.fullName || "");
+        setPhoneNumber(userProfiles.userProfile.phoneNumber || "");
+        setCity(userProfiles.userProfile.city || "");
+        setAddress(userProfiles.userProfile.country || "");
+      } else {
+        // Clear the form fields if the switch is unchecked
+        setName("");
+        setPhoneNumber("");
+        setCity("");
+        setAddress("");
+      }
+    };
+    
   // Handle city change for recipient
   const handleCityRecipientChange = (e) => {
     const value = e.target.value;
@@ -308,14 +337,28 @@ const handleSubmitPackage = async (e) => {
                     <FontAwesomeIcon icon={openPengirim ? faChevronUp : faChevronDown} style={{ marginLeft: 'auto' }} />
                   </div>
                   <hr />
+                  
+                  
                   <Collapse in={openPengirim}>
-                    <div>
+                   <div>
+                      <div className="d-flex justify-content-end">
+                      <Form>
+                        <Form.Check
+                          type="switch"
+                          id="custom-switch"
+                          label="Gunakan Data Akun"
+                          checked={useAccountData}
+                          onChange={handleUseAccountDataChange}
+                        />
+                      </Form>
+
+                      </div>
                       <div className="card-body pt-0">
                         <form onSubmit={handleSubmitSender}>
                           <div className="row mb-3">
                             <div className="col-md-6">
                               <label htmlFor="fullName" className="form-label">
-                                Nama Lengkap<span style={{ color: 'red' }}>*</span>
+                                Nama Lengkap <span style={{ color: 'red' }}>*</span>
                               </label>
                               <input
                                 type="text"
@@ -383,10 +426,11 @@ const handleSubmitPackage = async (e) => {
                               autoComplete="off"
                             />
                           </div>
+                          
                           <div className="d-flex justify-content-end">
-                          <Button type="submit" variant="primary" style={{backgroundColor:'#002754', border:'none'}} disabled={loading || isSenderCreated}>
-                              {isSenderCreated ? "Berhasil" : loading ? "Menyimpan..." : "Simpan"}
-                          </Button>
+                            <Button type="submit" variant="primary" style={{backgroundColor:'#002754', border:'none'}} disabled={loading || isSenderCreated}>
+                                {isSenderCreated ? "Berhasil" : loading ? "Menyimpan..." : "Simpan"}
+                            </Button>
 
                           </div>
                         </form>

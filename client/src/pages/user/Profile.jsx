@@ -192,24 +192,6 @@ const Profile = () => {
 
                       <div className="row mb-3">
                         <div className="col-sm-3">
-                          <label htmlFor="country" className="form-label">
-                            Negara
-                          </label>
-                        </div>
-                        <div className="col-sm-9">
-                          <input
-                            type="text"
-                            className="form-control"
-                            id="country"
-                            value={editMode ? formData.country : userProfiles?.userProfile?.country || ""}
-                            onChange={handleInputChange}
-                            disabled={!editMode}
-                          />
-                        </div>
-                      </div>
-
-                      <div className="row mb-3">
-                        <div className="col-sm-3">
                           <label htmlFor="city" className="form-label">
                             Kota
                           </label>
@@ -220,6 +202,24 @@ const Profile = () => {
                             className="form-control"
                             id="city"
                             value={editMode ? formData.city : userProfiles?.userProfile?.city || ""}
+                            onChange={handleInputChange}
+                            disabled={!editMode}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="row mb-3">
+                        <div className="col-sm-3">
+                          <label htmlFor="country" className="form-label">
+                            Alamat Lengkap
+                          </label>
+                        </div>
+                        <div className="col-sm-9">
+                          <input
+                            type="text"
+                            className="form-control"
+                            id="country"
+                            value={editMode ? formData.country : userProfiles?.userProfile?.country || ""}
                             onChange={handleInputChange}
                             disabled={!editMode}
                           />

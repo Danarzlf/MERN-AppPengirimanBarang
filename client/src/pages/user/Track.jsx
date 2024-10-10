@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate
 import NavBarNormal from "../../components/NavBar/NavBarNormal";
 import Footer from "../../components/Footer/Footer";
 import Table from 'react-bootstrap/Table';
+import { Button } from "react-bootstrap";
 import { TrackContext } from "../../context/TrackContext";
 
 // CSS
@@ -35,9 +36,9 @@ const Track = () => {
               onChange={(e) => setTrackingId(e.target.value)}
             />
             <p className="mt-3">*Bedakan dengan titik koma(,) </p>
-            <button className="btn btn-primary btn-track" onClick={handleTrackPackage}>
+            <Button className="btn w-100" style={{ backgroundColor: "var(--main-color)", border: "none", color:"white" }} onClick={handleTrackPackage}>
               Lacak Paket
-            </button>
+            </Button>
           </div>
         </div>
         {error && <p className="text-danger">{error}</p>}

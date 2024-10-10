@@ -22,7 +22,7 @@ const costEstimationSchema = new Schema(
     deliveryService: {
       type: String,
       enum: ['REGULER', 'NEXTDAY', 'CARGO', 'SAMEDAY'],
-      default: 'REGULER',
+      // default: 'REGULER',
     },
     fromCity: { type: Schema.Types.ObjectId, ref: 'City' },
     toCity: { type: Schema.Types.ObjectId, ref: 'City' },

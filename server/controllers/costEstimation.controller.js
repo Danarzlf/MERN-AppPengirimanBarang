@@ -641,8 +641,8 @@ const estimateCostByCityName = async (req, res, next) => {
 
     // Base costs
     const baseCost = costEstimation.cost;
-    const costPerKg = 10000; // Default cost per kg
-    const costPerVolumeUnit = 5000; // Default cost per volume unit (e.g., cubic meter)
+    const costPerKg = 2000; // Default cost per kg
+    const costPerVolumeUnit = 1000; // Default cost per volume unit (e.g., cubic meter)
 
     // Calculate volume from height, width, length
     const volume = (height || 0) * (width || 0) * (length || 0);
@@ -673,7 +673,7 @@ const estimateCostByCityName = async (req, res, next) => {
         
       case 'SAMEDAY':
         // SameDay service is the most expensive, flat rate + higher volume cost
-        const sameDayFlatRate = 75000; // Flat rate for same day service
+        const sameDayFlatRate = 15000; // Flat rate for same day service
         const sameDayVolumeCost = volume * (costPerVolumeUnit * 2); // Double the volume cost
         estimatedCost = baseCost + sameDayFlatRate + sameDayVolumeCost;
         break;

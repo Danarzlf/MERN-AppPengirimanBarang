@@ -16,10 +16,9 @@ const Estimation = () => {
     const [height, setHeight] = useState("");
     const [length, setLength] = useState("");
     const [estimatedCost, setEstimatedCost] = useState(null);
-    const [originCityId, setOriginCityId] = useState(null);
-    const [destinationCityId, setDestinationCityId] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [useVolume, setUseVolume] = useState(false);
+    const [deliveryService, setDeliveryService] = useState("REGULER"); // Default delivery service
 
     const handleVolumeChange = (e) => {
         setUseVolume(e.target.checked);
@@ -42,7 +41,6 @@ const Estimation = () => {
     const handleOriginCitySelect = (city) => {
         setInputOrigin(city.nameCity);
         setSuggestedOriginCities([]);
-        setOriginCityId(city._id);
     };
 
     const handleDestinationInputChange = (event) => {
@@ -62,7 +60,6 @@ const Estimation = () => {
     const handleDestinationCitySelect = (city) => {
         setInputDestination(city.nameCity);
         setSuggestedDestinationCities([]);
-        setDestinationCityId(city._id);
     };
 
     const handleWeightChange = (event) => {
@@ -82,25 +79,30 @@ const Estimation = () => {
         setLength(event.target.value);
     };
 
+    const handleDeliveryServiceChange = (event) => {
+        setDeliveryService(event.target.value);
+    };
+
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        if (!originCityId || !destinationCityId || !weight) {
+        if (!inputOrigin || !inputDestination || !weight) {
             console.error('All fields are required.');
             return;
         }
 
         const requestData = {
-            fromCity: originCityId,
-            toCity: destinationCityId,
+            fromCity: inputOrigin, // Use city name for origin
+            toCity: inputDestination, // Use city name for destination
             weight: weight,
             height: useVolume ? height : undefined,
             width: useVolume ? width : undefined,
             length: useVolume ? length : undefined,
+            deliveryService // Include the selected delivery service
         };
 
         try {
-            const response = await axios.post('http://localhost:8000/api/v1/cost-estimation/estimateCost', requestData);
+            const response = await axios.post('http://localhost:8000/api/v1/cost-estimation/estimateCostByCityName', requestData);
             const { data } = response.data;
             setEstimatedCost(data.estimatedCost);
             setShowModal(true);
@@ -251,17 +253,42 @@ const Estimation = () => {
                                 </div>
                             )}
 
-                            <button type="submit" className="btn btn-primary mt-4" style={{ width: "100%", backgroundColor:"#002754", border:"none" }}>Cek Estimasi</button>
+                            <div className="row mb-3">
+                                <div className="col-sm-3">
+                                    <label className="form-label">Layanan Pengiriman</label>
+                                </div>
+                                <div className="col-sm-9">
+                                    <select
+                                        className="form-select"
+                                        value={deliveryService}
+                                        onChange={handleDeliveryServiceChange}
+                                    >
+                                        <option value="REGULER">Reguler</option>
+                                        <option value="NEXTDAY">Next Day</option>
+                                        <option value="CARGO">Cargo</option>
+                                        <option value="SAMEDAY">Same Day</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div className="d-grid">
+                                <button type="submit" className="btn" style={{ backgroundColor: "var(--main-color)", border: "none", color:"white" }}>
+                                    Cek Ongkir
+                                </button>
+                            </div>
                         </form>
                     </div>
                 </div>
-
-                <EstimationModal 
-                    show={showModal} 
-                    onClose={() => setShowModal(false)} 
-                    estimatedCost={estimatedCost}
-                />
             </div>
+
+            {showModal && (
+                <EstimationModal
+                    onClose={() => setShowModal(false)}
+                    estimatedCost={estimatedCost}
+                    show={showModal}
+                />
+            )}
+
             <NavBarNormal />
             <Footer />
         </>

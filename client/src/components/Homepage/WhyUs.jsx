@@ -11,44 +11,44 @@ const WhyUs = () => {
         </div>
         <div className="image-text-container">
           <div className="image-text">
-            <img src="profile-null.png" alt="Profile" />
+            <img src="VIPCustomer.svg" alt="Profile" />
             <div>
-              <h5>PENGIRIMAN CEPAT</h5>
+              <h5>Diskon Spesial</h5>
               <p>Pengiriman cepat Lorem ipsum dolor sit amet consectetur.</p>
             </div>
           </div>
           <div className="image-text">
-            <img src="profile-null.png" alt="Profile" />
+            <img src="VIPCustomer-4.svg" alt="Profile" />
             <div>
-              <h5>PAKET DIJEMPUT </h5>
+              <h5>Pasti di PickUp</h5>
               <p>Pengiriman cepat Lorem ipsum dolor sit amet consectetur.</p>
             </div>
           </div>
           <div className="image-text">
-            <img src="profile-null.png" alt="Profile" />
+            <img src="VIPCustomer-3.svg" alt="Profile" />
             <div>
-              <h5>HARGA TERJANGKAU</h5>
+              <h5>Bisa COD</h5>
               <p>Pengiriman cepat Lorem ipsum dolor sit amet consectetur.</p>
             </div>
           </div>
           <div className="image-text">
-            <img src="profile-null.png" alt="Profile" />
+            <img src="VIPCustomer-2.svg" alt="Profile" />
             <div>
-              <h5>LACAK LOKASI</h5>
+              <h5>Tim Berdedikasi</h5>
               <p>Pengiriman cepat Lorem ipsum dolor sit amet consectetur.</p>
             </div>
           </div>
           <div className="image-text">
-            <img src="profile-null.png" alt="Profile" />
+            <img src="VIPCustomer-1.svg" alt="Profile" />
             <div>
-              <h5>RESI UP TO DATE</h5>
+              <h5>Cashback & Reward</h5>
               <p>Pengiriman cepat Lorem ipsum dolor sit amet consectetur.</p>
             </div>
           </div>
           <div className="image-text">
-            <img src="profile-null.png" alt="Profile" />
+            <img src="VIPCustomer-5.svg" alt="Profile" />
             <div>
-              <h5>KURIR PROFESIONAL</h5>
+              <h5>Realtime Tracking</h5>
               <p>Pengiriman cepat Lorem ipsum dolor sit amet consectetur.</p>
             </div>
           </div>

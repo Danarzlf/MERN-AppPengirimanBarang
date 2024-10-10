@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Cookies from "js-cookie";
 import LoginModal from "../../components/Modals/LoginModal";
 import "../../components/styles/Hero.css";
 
@@ -6,7 +7,7 @@ const Hero = () => {
   const [showModal, setShowModal] = useState(false);
 
   const handleButtonClick = () => {
-    const user = localStorage.getItem('User');
+    const user = Cookies.get('User');
     if (!user) {
       setShowModal(true);
     } else {

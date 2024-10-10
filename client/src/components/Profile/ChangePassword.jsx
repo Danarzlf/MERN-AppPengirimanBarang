@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button, Alert } from "react-bootstrap";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import '../../components/styles/Profile.css';
+import Cookies from "js-cookie"
 
 const ChangePassword = () => {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
@@ -32,7 +33,7 @@ const ChangePassword = () => {
     console.log("API URL: http://localhost:8000/api/v1/users/change-password");
 
     // Retrieve user from local storage
-    const user = JSON.parse(localStorage.getItem("User"));
+    const userCookie = Cookies.get("User");
     const token = user?.data?.token;
 
     if (!token) {
