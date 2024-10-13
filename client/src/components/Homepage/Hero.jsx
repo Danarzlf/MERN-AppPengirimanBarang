@@ -7,7 +7,7 @@ const Hero = () => {
   const [showModal, setShowModal] = useState(false);
 
   const handleButtonClick = () => {
-    const user = Cookies.get('User');
+    const user = Cookies.get('token');
     if (!user) {
       setShowModal(true);
     } else {

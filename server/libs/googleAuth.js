@@ -83,18 +83,14 @@ const googleCallback = async (req, res, next) => {
     };
 
     const secret = process.env.JWT_SECRET_KEY;
-    const expiresIn = 60 * 60 * 1;
+    const expiresIn = 60 * 60 * 3;
 
     const token = jwt.sign(payload, secret, { expiresIn });
 
-    res.cookie("User", JSON.stringify({
-      data: {
-        user: userData,
-        token,
-      }
-    }), {
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-      secure: process.env.NODE_ENV === 'production',
+    res.cookie("token", token, {
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 hari
+      secure: process.env.NODE_ENV === 'production', // Hanya di produksi
+      // httpOnly: true, // Tambahkan ini untuk keamanan
     });
 
     return res.redirect(`http://localhost:5173?token=${token}`);

@@ -31,6 +31,7 @@ const NavBar = () => {
     confirmLogout,
   } = useContext(AuthContext);
 
+  // console.log("user navbar",user)
   const { userProfiles } = useContext(ProfileContext);
 
   const navigate = useNavigate();

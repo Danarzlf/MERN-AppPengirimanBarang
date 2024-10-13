@@ -1,7 +1,7 @@
 import { createContext, useState, useEffect } from "react";
 import { baseUrl, getRequest, putRequest } from "../utils/service";
 import { API_ENDPOINT } from "../utils/api-endpoint";
-import Cookies from "js-cookie"
+import Cookies from "js-cookie";
 
 export const ProfileContext = createContext();
 
@@ -22,8 +22,6 @@ export const ProfileContextProvider = ({ children }) => {
   // MODAL
   const [isModalLoadingVisible, setIsModalLoadingVisible] = useState(false);
   const [isSuccessModalVisible, setIsSuccessModalVisible] = useState(false);
-
-  // console.log("ini data profile", userProfiles);
 
   const handleSuccessModalClose = () => {
     setIsSuccessModalVisible(false);
@@ -53,14 +51,18 @@ export const ProfileContextProvider = ({ children }) => {
       formDataObj.append("city", formData.city);
       formDataObj.append("image", formData.image);
 
-      const userCookie = Cookies.get("User"); // Get the User cookie
-      const user = userCookie ? JSON.parse(userCookie) : null;
+      // Get the token directly from cookies
+      const token = Cookies.get("token");
+
+      if (!token) {
+        throw new Error("Token not found");
+      }
 
       const response = await putRequest(
         `${baseUrl}${API_ENDPOINT.UPDATE_PROFILE}`,
         formDataObj,
         {
-          Authorization: `Bearer ${user.data.token}`,
+          Authorization: `Bearer ${token}`, // Use token directly
         }
       );
 
@@ -80,14 +82,21 @@ export const ProfileContextProvider = ({ children }) => {
 
   useEffect(() => {
     const getUserProfiles = async () => {
-      const userCookie = Cookies.get("User"); // Get the User cookie
-      const user = userCookie ? JSON.parse(userCookie) : null;
+      // Get the token directly from cookies
+      const token = Cookies.get("token");
+
+      if (!token) {
+        setUserProfilesError({
+          error: "Token not found",
+        });
+        return;
+      }
 
       try {
         const response = await getRequest(
           `${baseUrl}${API_ENDPOINT.AUTH_USER}`,
           {
-            Authorization: `Bearer ${user.data.token}`,
+            Authorization: `Bearer ${token}`, // Use token directly
           }
         );
 

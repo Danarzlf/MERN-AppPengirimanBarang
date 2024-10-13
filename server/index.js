@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
+const cookieParser = require('cookie-parser');
 const mongoose = require("mongoose");
 const userRoute = require("./routes/user.routes");
 const userProfileRoute = require("./routes/userProfile.routes");
@@ -29,6 +30,7 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
+app.use(cookieParser());
 
 app.use("/api/v1/users", userRoute);
 app.use("/api/v1/user-profiles", userProfileRoute);

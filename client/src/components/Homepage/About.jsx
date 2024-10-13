@@ -20,7 +20,7 @@ const About = () => {
   } = useContext(TrackContext);
 
   const { cities, isLoading } = useContext(CityContext);
-  console.log(cities);
+  // console.log(cities);
 
   const handleTrackClick = () => {
     setShowTrackForm(true);

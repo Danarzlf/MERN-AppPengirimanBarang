@@ -31,36 +31,35 @@ const ChangePassword = () => {
   const handlePasswordChange = async () => {
     console.log("Attempting to change password...");
     console.log("API URL: http://localhost:8000/api/v1/users/change-password");
-
-    // Retrieve user from local storage
-    const userCookie = Cookies.get("User");
-    const token = user?.data?.token;
-
+  
+    // Retrieve token from cookies directly
+    const token = Cookies.get("token"); // Get the token directly from the cookie
+  
     if (!token) {
       console.error("Token is not available");
       setMessage("Unable to retrieve authentication token.");
       setMessageType("error");
       return;
     }
-
+  
     try {
       const response = await fetch("http://localhost:8000/api/v1/users/change-password", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`, // Use token from local storage
+          "Authorization": `Bearer ${token}`, // Use the token directly
         },
         body: JSON.stringify({
-          oldPassword,
-          newPassword,
-          newPasswordConfirmation,
+          oldPassword, // Old password value (should be a state or passed from somewhere)
+          newPassword, // New password value (should be a state or passed from somewhere)
+          newPasswordConfirmation, // New password confirmation (should be a state or passed from somewhere)
         }),
       });
-
+  
       const result = await response.json();
-
+  
       console.log("API Response:", result);
-
+  
       if (result.status) {
         setMessage(result.message);
         setMessageType("success");
@@ -74,6 +73,7 @@ const ChangePassword = () => {
       setMessageType("error");
     }
   };
+  
 
   return (
     <>

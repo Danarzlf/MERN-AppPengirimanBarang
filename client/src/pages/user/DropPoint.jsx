@@ -42,7 +42,7 @@ const DropPoint = () => {
         <h1 className="mb-4">Drop Point</h1>
         <p>Home &gt; Drop Point</p>
       </div>
-      <div className="container mt-5">
+      <div className="container mt-5" style={{marginBottom:'300px'}}>
         <h4>Cari Drop Point</h4>
         <p>Cari drop point terdekat di daerahmu</p>
         <input 

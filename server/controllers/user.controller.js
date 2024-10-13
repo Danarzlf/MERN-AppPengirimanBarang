@@ -360,15 +360,9 @@ const verifyOtp = async (req, res, next) => {
       let token = jwt.sign({ id: user._id }, JWT_SECRET_KEY);
   
       return res.status(200).json({
-        status: true,
-        message: "Login successful",
-        data: {
-          user: {
-            email: user.email, /* tambahkan properti lain jika diperlukan */
-            role: user.role
-          },
-          token,
-        },
+        // status: true,
+        // message: "Login successful",
+        token,
       });
     } catch (err) {
       next(err);
@@ -754,6 +748,24 @@ const verifyOtp = async (req, res, next) => {
     }
   };
   
+
+  const logoutUser = async (req, res, next) => {
+    try {
+        // Clear the token cookie
+        res.clearCookie('token'); // Adjust 'token' to the name of your cookie
+
+        // Optionally, you can also invalidate the token on the server side if using a blacklist
+        
+        res.status(200).json({
+            status: true,
+            message: "Successfully logged out",
+            data: null,
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
   
   
 module.exports = {
@@ -768,4 +780,5 @@ module.exports = {
     changePasswordUser,
     forgetPasswordUser,
     updatePasswordUser,
+    logoutUser,
   };

@@ -12,8 +12,11 @@ const {
   deleteUserById,
   changePasswordUser,
   forgetPasswordUser,
-  updatePasswordUser
+  updatePasswordUser,
+  logoutUser,
+
 } = require("../controllers/user.controller");
+const jwt = require("jsonwebtoken");
 
 // Import Google OAuth functions
 const { googleLogin, googleCallback } = require("../libs/googleAuth");
@@ -39,5 +42,7 @@ router.put("/change-password", Auth, checkRole(["User", "Admin"]), changePasswor
 router.post("/forget-password", forgetPasswordUser);
 router.put("/update-password", updatePasswordUser);
 router.delete("/:id", deleteUserById);
+router.post('/logout', logoutUser); // Define the route for logout
+
 
 module.exports = router;

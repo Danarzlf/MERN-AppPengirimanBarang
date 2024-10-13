@@ -39,28 +39,20 @@ export const AuthContextProvider = ({ children }) => {
   // console.log("registerInfo", registerInfo);
   // console.log("registerError", registerError);
 
-  //protecting route agar kalo direfresh data user tetep ada
-  //pakai local
-  // useEffect(() => {
-  //   const user = localStorage.getItem("User");
-
-  //   setUser(JSON.parse(user));
-  // }, []);
-
-  //pakai cookie
+  
+  // pakai cookie
   useEffect(() => {
-    const userCookie = Cookies.get("User");
-
+    const userCookie = Cookies.get("token");
+  
     if (userCookie) {
-      try {
-        const parsedUser = JSON.parse(userCookie);
-        setUser(parsedUser);
-      } catch (error) {
-        console.error("Error parsing user from cookie:", error);
-        Cookies.remove("User"); // Remove invalid cookie if parsing fails
-      }
+      // Token exists, set it directly
+      setUser(userCookie); // Assuming you want to store the token directly
+    } else {
+      // Optionally clear the user state if no token is found
+      setUser(null); // Set user to null if no token is found
     }
   }, []);
+  
 
   const updateRegisterInfo = useCallback((info) => {
     setRegisterInfo(info);
@@ -122,9 +114,10 @@ export const AuthContextProvider = ({ children }) => {
         return;
       }
 
-      // localStorage.setItem("User", JSON.stringify(response));
-      Cookies.set("User", JSON.stringify(response), { expires: 7 });
-      setUser(response);
+      // Assuming your response directly contains the token
+      const { token } = response; // Destructure the token from the response
+      Cookies.set("token", token, { expires: 7 }); // Set the token cookie directly
+      setUser(response); // Store user info in state (if needed)
 
       // Assuming your response contains a 'successMessage' field
       if (response.message) {
@@ -200,7 +193,6 @@ export const AuthContextProvider = ({ children }) => {
     // Hide the logout confirmation modal
     hideLogoutModal();
 
-    Cookies.remove("User"); // Remove the User cookie
     Cookies.remove("token"); // Remove the User cookie
     setUser(null);
 

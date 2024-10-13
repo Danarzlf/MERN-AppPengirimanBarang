@@ -22,31 +22,30 @@ const LinkUpProfile = () => {
   // Fetch shipments data from API
   const fetchShipments = async () => {
     try {
-      const userCookie = Cookies.get("User"); // Get the User cookie
-      const user = userCookie ? JSON.parse(userCookie) : null; // Get the User object from local storage
+      const token = Cookies.get("token"); // Get the token directly from the cookie
   
-      if (!user || !user.data || !user.data.token) {
-        throw new Error("User is not authenticated"); // Handle case where user or token is missing
+      if (!token) {
+        throw new Error("User is not authenticated"); // Handle case where token is missing
       }
-  
-      const token = user.data.token; // Extract the token from user.data.token
   
       const response = await axios.get("http://localhost:8000/api/v1/shipments", {
         headers: {
           Authorization: `Bearer ${token}`, // Include token in Authorization header
         },
       });
-
+  
       // Assuming response.data.data contains the shipments
       const sortedShipments = response.data.data.sort((a, b) => {
         return new Date(b.createdAt) - new Date(a.createdAt); // Sort by creation date in descending order
       });
-
+  
       setShipments(sortedShipments);
     } catch (err) {
       setError("Failed to fetch shipments. Please try again.");
+      console.error("Error fetching shipments:", err); // Log the error for debugging
     }
   };
+  
 
   useEffect(() => {
     fetchShipments(); // Call the fetchShipments function when the component mounts

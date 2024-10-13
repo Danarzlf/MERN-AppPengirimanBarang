@@ -1,6 +1,7 @@
 import React from "react";
 import Marquee from "react-fast-marquee";
 import { Button } from "react-bootstrap";
+import { Link } from 'react-router-dom';
 import "../../components/styles/Service.css";
 
 const Service = () => {
@@ -32,7 +33,13 @@ const Service = () => {
     >
       <div className="container text-center text-white">
         <p className="fw-bold" style={{fontSize:'30px'}}>Taruh barangmu di DropShip terdekat</p>
-        <Button style={{ backgroundColor: 'var(--secondary-color)', color: 'white', border:'none' }}>Cari DropShip</Button>
+        <Button 
+          as={Link} 
+          to="/drop-point" 
+          style={{ backgroundColor: 'var(--secondary-color)', color: 'white', border:'none' }}
+        >
+          Cari DropShip
+</Button>
       </div>
     </section>
 

@@ -15,21 +15,25 @@ const Notification = () => {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const userCookie = Cookies.get("User"); // Get the User cookie
-        const user = userCookie ? JSON.parse(userCookie) : null; 
+        const token = Cookies.get("token"); // Get the token directly from the cookie
+  
+        if (!token) {
+          console.error("No token found");
+          return; // Exit if no token is found
+        }
+  
         const response = await fetch(
           "http://localhost:8000/api/v1/notification",
           {
             headers: {
-              Authorization: `Bearer ${user.data.token}`,
+              Authorization: `Bearer ${token}`, // Use the token directly
               "Content-Type": "application/json",
             },
           }
         );
-
+  
         const data = await response.json();
-        console.log('asda',user)
-
+  
         if (data.status) {
           setNotifications(data.data.notifications.reverse());
         } else {
@@ -39,9 +43,10 @@ const Notification = () => {
         console.error("Error fetching notifications:", error);
       }
     };
-
+  
     fetchNotifications();
   }, []);
+  
 
   const handleLoadMore = () => {
     setDisplayedNotifications(displayedNotifications + 5);
@@ -63,18 +68,24 @@ const Notification = () => {
 
   const handleDeleteNotification = async () => {
     try {
-      const userCookie = Cookies.get("User"); // Get the User cookie
-      const user = userCookie ? JSON.parse(userCookie) : null;
+      // Get the token directly from the "token" cookie
+      const token = Cookies.get("token");
+  
+      if (!token) {
+        console.error("No token found");
+        return; // Exit if no token is found
+      }
+  
       const response = await fetch(`http://localhost:8000/api/v1/notification/${selectedNotification._id}`, {
         method: "DELETE",
         headers: {
-          Authorization: `Bearer ${user.data.token}`,
+          Authorization: `Bearer ${token}`, // Use the token directly
           "Content-Type": "application/json",
         },
       });
-
+  
       const data = await response.json();
-
+  
       if (data.status) {
         setNotifications(notifications.filter((notification) => notification._id !== selectedNotification._id));
         handleCloseModal();
@@ -85,6 +96,7 @@ const Notification = () => {
       console.error("Error deleting notification:", error);
     }
   };
+  
 
   return (
     <>
