@@ -356,14 +356,21 @@ const verifyOtp = async (req, res, next) => {
         });
       }
   
-      // Generate JWT token for authentication
-      let token = jwt.sign({ id: user._id }, JWT_SECRET_KEY);
-  
-      return res.status(200).json({
-        // status: true,
-        // message: "Login successful",
-        token,
-      });
+      let token = jwt.sign({ id: user._id }, JWT_SECRET_KEY, { expiresIn: '1h' });
+
+    // Set the token as an HTTP-only cookie
+    // res.cookie('token', token, {
+    //   httpOnly: true, // Prevents the cookie from being accessed by JavaScript
+    //   secure: process.env.NODE_ENV === 'production', // Sets the cookie to be secure in production
+    //   sameSite: 'Strict', // Protects against CSRF attacks
+    //   maxAge: 3600000, // Cookie expires in 1 hour
+    // });
+
+    return res.status(200).json({
+      // status: true,
+      // message: "Login successful",
+      token,
+    });
     } catch (err) {
       next(err);
     }

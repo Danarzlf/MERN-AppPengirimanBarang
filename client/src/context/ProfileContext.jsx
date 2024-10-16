@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from "react";
-import { baseUrl, getRequest, putRequest } from "../utils/service";
+import { getRequest, putRequest } from "../utils/service";
 import { API_ENDPOINT } from "../utils/api-endpoint";
 import Cookies from "js-cookie";
 
@@ -9,7 +9,7 @@ export const ProfileContextProvider = ({ children }) => {
   const [userProfiles, setUserProfiles] = useState(null);
   const [isUserProfilesLoading, setIsUserProfilesLoading] = useState(false);
   const [userProfilesError, setUserProfilesError] = useState(null);
-
+  
   // Create state to manage form data
   const [formData, setFormData] = useState({
     fullName: "",
@@ -59,7 +59,7 @@ export const ProfileContextProvider = ({ children }) => {
       }
 
       const response = await putRequest(
-        `${baseUrl}${API_ENDPOINT.UPDATE_PROFILE}`,
+        `${API_ENDPOINT.BASE_URL}${API_ENDPOINT.UPDATE_PROFILE}`,
         formDataObj,
         {
           Authorization: `Bearer ${token}`, // Use token directly
@@ -94,7 +94,7 @@ export const ProfileContextProvider = ({ children }) => {
 
       try {
         const response = await getRequest(
-          `${baseUrl}${API_ENDPOINT.AUTH_USER}`,
+          `${API_ENDPOINT.BASE_URL}${API_ENDPOINT.AUTH_USER}`,
           {
             Authorization: `Bearer ${token}`, // Use token directly
           }
@@ -102,8 +102,12 @@ export const ProfileContextProvider = ({ children }) => {
 
         setIsUserProfilesLoading(false);
 
-        if (response.error) {
-          return setUserProfilesError(response);
+        if (response.error || !response.data.user) {
+          Cookies.remove("token"); // Remove token if the user profile is not found
+          navigate("/login"); // Redirect to login page
+          return setUserProfilesError({
+            error: "User profile not found",
+          });
         }
 
         setUserProfiles(response.data.user);

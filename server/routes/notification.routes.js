@@ -9,7 +9,7 @@ const Auth = require("../middlewares/authentication");
 const checkRole = require("../middlewares/checkRole");
 
 router.get("/", Auth, checkRole(["User", "Admin"]), getAllNotifications);
-router.post("/", createNotification);
+router.post("/",createNotification);
 router.put(
   "/markAsRead",
   Auth,

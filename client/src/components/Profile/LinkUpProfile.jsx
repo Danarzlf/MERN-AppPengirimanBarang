@@ -7,6 +7,7 @@ import axios from 'axios'; // Import axios for API requests
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import '../../components/styles/Profile.css';
 import Cookies from 'js-cookie';
+import { API_ENDPOINT } from "../../utils/api-endpoint";
 
 const LinkUpProfile = () => {
   const { userProfiles } = useContext(ProfileContext);
@@ -28,7 +29,7 @@ const LinkUpProfile = () => {
         throw new Error("User is not authenticated"); // Handle case where token is missing
       }
   
-      const response = await axios.get("http://localhost:8000/api/v1/shipments", {
+      const response = await axios.get(`${API_ENDPOINT.BASE_URL}${API_ENDPOINT.GET_ALL_SHIPMENT}`, {
         headers: {
           Authorization: `Bearer ${token}`, // Include token in Authorization header
         },

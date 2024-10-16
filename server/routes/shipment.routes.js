@@ -9,10 +9,15 @@ const {
   updateShipmentById,
   getShipmentByNoTrack,
 } = require("../controllers/shipment.controller");
+const apiLimiter = require("../middlewares/rateLimit");
 
 const router = express.Router();
 
-router.post("/create-shipments", createShipment);
+// Hapus penggunaan apiLimiter secara global
+// router.use(apiLimiter); 
+
+// Terapkan apiLimiter hanya pada rute yang diinginkan
+router.post("/create-shipments", apiLimiter, createShipment);
 router.get("/:id", getShipmentById);
 router.delete("/:id", deleteShipment);
 router.get("/", Auth, checkRole(["User", "Admin"]), getAllShipments);

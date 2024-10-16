@@ -12,7 +12,7 @@ export const CityContextProvider = ({ children }) => {
     const fetchCities = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch(`http://localhost:8000/api/v1/city`);
+        const response = await fetch(`${API_ENDPOINT.BASE_URL}${API_ENDPOINT.GET_ALL_CITY}`);
 
         if (response.ok) {
           const data = await response.json();

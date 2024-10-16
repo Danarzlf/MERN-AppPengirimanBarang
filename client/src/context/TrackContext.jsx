@@ -5,11 +5,7 @@ export const TrackContext = createContext();
 
 export const TrackContextProvider = ({ children }) => {
   const [trackingId, setTrackingId] = useState("");
-  const [shipmentData, setShipmentData] = useState(() => {
-    // Load existing shipment data from localStorage if available
-    const savedData = localStorage.getItem("shipmentData");
-    return savedData ? JSON.parse(savedData) : null;
-  });
+  const [shipmentData, setShipmentData] = useState(null);
   const [error, setError] = useState(null);
 
   const handleTrackPackage = async () => {
@@ -19,7 +15,7 @@ export const TrackContextProvider = ({ children }) => {
     }
 
     try {
-      const response = await fetch(`http://localhost:8000/api/v1/shipments/track/${trackingId}`);
+      const response = await fetch(`${API_ENDPOINT.BASE_URL}${API_ENDPOINT.TRACK_SHIPMENT.replace(':noTrack', trackingId)}`);
 
       // Check if the response is not ok (4xx or 5xx status)
       if (!response.ok) {
@@ -29,7 +25,7 @@ export const TrackContextProvider = ({ children }) => {
 
       const data = await response.json();
       setShipmentData(data);
-      // localStorage.setItem("shipmentData", JSON.stringify(data)); // Save to localStorage
+  
       setError(null); // Clear any previous errors
     } catch (error) {
       setError(error.message);
@@ -37,8 +33,6 @@ export const TrackContextProvider = ({ children }) => {
   };
 
   
-
-  // console.log("ini data shipment dari context", shipmentData);
   return (
     <TrackContext.Provider
       value={{

@@ -1,14 +1,16 @@
-import { useState } from "react";
-import Cookies from "js-cookie";
+import { useState, useContext } from "react";
 import LoginModal from "../../components/Modals/LoginModal";
 import "../../components/styles/Hero.css";
+import { ProfileContext } from "../../context/ProfileContext";
 
 const Hero = () => {
+  const { userProfiles } = useContext(ProfileContext);
   const [showModal, setShowModal] = useState(false);
+  // console.log("userptofiles di hero",userProfiles)
 
   const handleButtonClick = () => {
-    const user = Cookies.get('token');
-    if (!user) {
+  
+    if (!userProfiles) {
       setShowModal(true);
     } else {
       window.location.href = '/create-book';

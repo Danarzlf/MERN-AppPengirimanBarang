@@ -5,6 +5,7 @@ import { id } from "date-fns/locale";
 import NotificationDeleteModal from "../../components/Modals/NotificationDeleteModal";
 import "../../components/styles/Notification.css";
 import Cookies from "js-cookie";
+import { API_ENDPOINT } from '../../utils/api-endpoint';
 
 const Notification = () => {
   const [notifications, setNotifications] = useState([]);
@@ -23,7 +24,7 @@ const Notification = () => {
         }
   
         const response = await fetch(
-          "http://localhost:8000/api/v1/notification",
+          `${API_ENDPOINT.BASE_URL}${API_ENDPOINT.GET_ALL_NOTIFICATIONS}`,
           {
             headers: {
               Authorization: `Bearer ${token}`, // Use the token directly
@@ -76,11 +77,11 @@ const Notification = () => {
         return; // Exit if no token is found
       }
   
-      const response = await fetch(`http://localhost:8000/api/v1/notification/${selectedNotification._id}`, {
+      const response = await fetch(`${API_ENDPOINT.BASE_URL}${API_ENDPOINT.DELETE_NOTIFICATIONS.replace(':id', selectedNotification._id)}`, {
         method: "DELETE",
         headers: {
-          Authorization: `Bearer ${token}`, // Use the token directly
-          "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // Use the token directly
+            "Content-Type": "application/json",
         },
       });
   

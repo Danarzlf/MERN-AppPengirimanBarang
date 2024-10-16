@@ -5,6 +5,7 @@ import loginLogo from "/vite.svg";
 import { showSuccessToast, showErrorToast } from "../../helper/ToastHelper";
 import "../../components/styles/Login.css";
 import axios from "axios";
+import { API_ENDPOINT } from '../../utils/api-endpoint';
 
 const UpdatePassword = () => {
   const [password, setPassword] = useState("");
@@ -24,7 +25,7 @@ const UpdatePassword = () => {
 
     try {
       const response = await axios.put(
-        "http://localhost:8000/api/v1/users/update-password",
+        `${API_ENDPOINT.BASE_URL}${API_ENDPOINT.UPDATE_PASS}`,
         { password, passwordConfirmation },
         { params: { token } }
       );

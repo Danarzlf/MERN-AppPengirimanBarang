@@ -82,6 +82,7 @@ const About = () => {
                   className="form-control"
                   value={trackingId}
                   onChange={(e) => setTrackingId(e.target.value)}
+                  maxLength={30}
                 />
                 <button className="btn mt-2 btn-track" style={{backgroundColor: "#3884c4", color:"white"}} onClick={handleTrackPackage}>
                   Lacak

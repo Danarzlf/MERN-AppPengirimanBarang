@@ -2,10 +2,11 @@ import React from "react";
 
 // Icons
 import { FcGoogle } from "react-icons/fc";
+import { API_ENDPOINT } from "../../utils/api-endpoint";
 
 export const LoginGoogle = () => {
   const handleLoginGoogle = async () => {
-    window.location = "http://localhost:8000/api/v1/users/google";
+    window.location = `${API_ENDPOINT.BASE_URL}${API_ENDPOINT.GOOGLE}`;
   };
 
   return (

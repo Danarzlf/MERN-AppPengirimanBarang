@@ -34,6 +34,7 @@ const Track = () => {
               placeholder="Input no resi"
               value={trackingId}
               onChange={(e) => setTrackingId(e.target.value)}
+              maxLength={30}
             />
             <p className="mt-3">*Bedakan dengan titik koma(,) </p>
             <Button className="btn w-100" style={{ backgroundColor: "var(--main-color)", border: "none", color:"white" }} onClick={handleTrackPackage}>

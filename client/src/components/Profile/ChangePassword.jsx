@@ -3,6 +3,7 @@ import { Button, Alert } from "react-bootstrap";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import '../../components/styles/Profile.css';
 import Cookies from "js-cookie"
+import { API_ENDPOINT } from "../../utils/api-endpoint";
 
 const ChangePassword = () => {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
@@ -29,8 +30,7 @@ const ChangePassword = () => {
   };
 
   const handlePasswordChange = async () => {
-    console.log("Attempting to change password...");
-    console.log("API URL: http://localhost:8000/api/v1/users/change-password");
+    // console.log("Attempting to change password...");
   
     // Retrieve token from cookies directly
     const token = Cookies.get("token"); // Get the token directly from the cookie
@@ -43,7 +43,7 @@ const ChangePassword = () => {
     }
   
     try {
-      const response = await fetch("http://localhost:8000/api/v1/users/change-password", {
+      const response = await fetch(`${API_ENDPOINT.BASE_URL}${API_ENDPOINT.CHANGE_PASSWORD}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

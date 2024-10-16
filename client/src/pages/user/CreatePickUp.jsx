@@ -13,6 +13,7 @@
   import Footer from "../../components/Footer/Footer";
   import CheckModal from "../../components/Modals/CheckModal";
   import "../../components/styles/CreatePickUp.css";
+  import { API_ENDPOINT } from "../../utils/api-endpoint";
 
   const CreatePickUp = () => {
     const {
@@ -170,7 +171,7 @@
       setLoading(true);
 
       try {
-        const response = await fetch("http://localhost:8000/api/v1/senders/create-senders", {
+        const response = await fetch(`${API_ENDPOINT.BASE_URL}${API_ENDPOINT.CREATE_SENDER}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -206,7 +207,7 @@
       setLoading(true);
     
       try {
-        const response = await fetch("http://localhost:8000/api/v1/recipients/create-recipients", {
+        const response = await fetch(`${API_ENDPOINT.BASE_URL}${API_ENDPOINT.CREATE_RECIPIENT}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -245,7 +246,7 @@ const handleSubmitPackage = async (e) => {
   setLoading(true);
 
   try {
-    const response = await fetch("http://localhost:8000/api/v1/packages/create-packages", {
+    const response = await fetch(`${API_ENDPOINT.BASE_URL}${API_ENDPOINT.CREATE_PACKAGE}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -289,7 +290,7 @@ const handleSubmitPackage = async (e) => {
     const estimateCost = async () => {
       setLoading(true);
       try {
-        const response = await fetch("http://localhost:8000/api/v1/cost-estimation/estimateCostByCityName", {
+        const response = await fetch(`${API_ENDPOINT.BASE_URL}${API_ENDPOINT.ESTIMATE_COST_BY_CITY_NAME}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

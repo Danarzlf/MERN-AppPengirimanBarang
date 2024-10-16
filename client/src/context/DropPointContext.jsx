@@ -12,7 +12,7 @@ export const DropPointContextProvider = ({ children }) => {
     const fetchDropPoints = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch(`http://localhost:8000/api/v1${API_ENDPOINT.GETALL_DROPPOINT}`);
+        const response = await fetch(`http://localhost:8000/api/v1${API_ENDPOINT.GET_ALL_DROP_POINT}`);
 
         if (response.ok) {
           const data = await response.json();

@@ -6,6 +6,7 @@ import NavBarNormal from "../../components/NavBar/NavBarNormal";
 import Footer from "../../components/Footer/Footer";
 import "../../components/styles/Receipt.css";
 import Cookies from "js-cookie";
+import { API_ENDPOINT } from '../../utils/api-endpoint';
 
 const Receipt = () => {
   const { userProfiles } = useContext(ProfileContext);
@@ -25,7 +26,7 @@ const Receipt = () => {
   useEffect(() => {
     const fetchShipmentData = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/api/v1/shipments/track/${trackingId}`);
+        const response = await fetch(`${API_ENDPOINT.BASE_URL}${API_ENDPOINT.TRACK_SHIPMENT.replace(':noTrack', trackingId)}`);
         if (!response.ok) {
           throw new Error("Failed to fetch shipment data");
         }
@@ -53,7 +54,7 @@ const Receipt = () => {
   
     // Mengirim permintaan
     try {
-      const response = await fetch("http://localhost:8000/api/v1/payments", {
+      const response = await fetch(`${API_ENDPOINT.BASE_URL}${API_ENDPOINT.CREATE_PAYMENT}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

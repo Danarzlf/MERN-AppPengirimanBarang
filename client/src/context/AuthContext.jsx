@@ -1,5 +1,5 @@
 import { createContext, useCallback, useState } from "react";
-import { baseUrl, postRequest } from "../utils/service";
+import { postRequest } from "../utils/service";
 import { API_ENDPOINT } from "../utils/api-endpoint";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -70,7 +70,7 @@ export const AuthContextProvider = ({ children }) => {
       setRegisterError(null);
 
       const response = await postRequest(
-        `${baseUrl}${API_ENDPOINT.USER_REGISTER}`,
+        `${API_ENDPOINT.BASE_URL}${API_ENDPOINT.USER_REGISTER}`,
         JSON.stringify(registerInfo)
       );
 
@@ -103,7 +103,7 @@ export const AuthContextProvider = ({ children }) => {
       setLoginError(null);
 
       const response = await postRequest(
-        `${baseUrl}${API_ENDPOINT.USER_LOGIN}`,
+        `${API_ENDPOINT.BASE_URL}${API_ENDPOINT.USER_LOGIN}`,
         JSON.stringify(loginInfo)
       );
 
@@ -132,7 +132,7 @@ export const AuthContextProvider = ({ children }) => {
 
   const verifyOTP = async (email, otp) => {
     try {
-      const response = await fetch(`${baseUrl}${API_ENDPOINT.VERIFY_OTP}`, {
+      const response = await fetch(`${API_ENDPOINT.BASE_URL}${API_ENDPOINT.VERIFY_OTP}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

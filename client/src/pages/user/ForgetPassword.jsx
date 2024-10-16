@@ -9,6 +9,7 @@ import {
   Container,
 } from "react-bootstrap";
 import loginLogo from "/vite.svg";
+import { API_ENDPOINT } from "../../utils/api-endpoint";
 
 // Helper
 import { showSuccessToast, showErrorToast } from "../../helper/ToastHelper";
@@ -27,7 +28,7 @@ const ForgetPassword = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:8000/api/v1/users/forget-password",
+        `${API_ENDPOINT.BASE_URL}${API_ENDPOINT.FORGET_PASS}`,
         {
           method: "POST",
           headers: {

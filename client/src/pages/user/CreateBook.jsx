@@ -1,9 +1,10 @@
 import { useContext, useState } from "react";
-import { Container, Row, Col, Card, Button } from "react-bootstrap";
+import { Container, Row, Col, Card, Button, Alert  } from "react-bootstrap";
 import { ProfileContext } from "../../context/ProfileContext";
 import NavBarNormal from "../../components/NavBar/NavBarNormal";
 import Footer from "../../components/Footer/Footer";
 import { useNavigate } from "react-router-dom";
+import { API_ENDPOINT } from "../../utils/api-endpoint";
 
 // CSS
 import "../../components/styles/CreateBook.css";
@@ -15,6 +16,7 @@ const dropoffImage = "dropoff-.png";
 const CreateBook = () => {
   const { userProfiles } = useContext(ProfileContext);
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(""); // State untuk menyimpan pesan kesalahan
   const navigate = useNavigate();
 
   const createShipment = async (type) => {
@@ -25,9 +27,10 @@ const CreateBook = () => {
   
     try {
       setLoading(true); // Set loading to true before making the request
-  
+      setErrorMessage(""); // Reset error message
+
       const noTrack = `TRK-${Date.now()}`; // Generate tracking number
-      const response = await fetch("http://localhost:8000/api/v1/shipments/create-shipments", {
+      const response = await fetch(`${API_ENDPOINT.BASE_URL}${API_ENDPOINT.CREATE_SHIPMENT}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -39,6 +42,14 @@ const CreateBook = () => {
           status: "Pending",
         }),
       });
+  
+      // Check for 429 Too Many Requests
+      if (response.status === 429) {
+        const data = await response.json();
+        setErrorMessage(data.error || " silakan coba lagi nanti.");
+        setLoading(false); // Set loading to false after handling error
+        return; // Stop further processing
+      }
   
       const data = await response.json();
       setLoading(false); // Set loading to false after the request completes
@@ -120,6 +131,7 @@ const CreateBook = () => {
             </Card>
           </Col>
         </Row>
+        {errorMessage && <Alert variant="danger">{errorMessage}</Alert>} {/* Display error message */}
       </Container>
       <NavBarNormal />
       <Footer />

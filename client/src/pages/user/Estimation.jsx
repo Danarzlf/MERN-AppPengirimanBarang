@@ -4,6 +4,7 @@ import { CityContext } from "../../context/CityContext";
 import NavBarNormal from "../../components/NavBar/NavBarNormal";
 import Footer from "../../components/Footer/Footer";
 import EstimationModal from "../../components/Modals/EstimationModal";
+import { API_ENDPOINT } from "../../utils/api-endpoint";
 
 const Estimation = () => {
     const { cities, isLoading, error } = useContext(CityContext);
@@ -102,7 +103,7 @@ const Estimation = () => {
         };
 
         try {
-            const response = await axios.post('http://localhost:8000/api/v1/cost-estimation/estimateCostByCityName', requestData);
+            const response = await axios.post(`${API_ENDPOINT.BASE_URL}${API_ENDPOINT.ESTIMATE_COST_BY_CITY_NAME}`, requestData);
             const { data } = response.data;
             setEstimatedCost(data.estimatedCost);
             setShowModal(true);

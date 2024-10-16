@@ -1,5 +1,3 @@
-export const baseUrl = "http://localhost:8000/api/v1";
-
 export const postRequest = async (url, body) => {
   // console.log("body", body);
   const response = await fetch(url, {

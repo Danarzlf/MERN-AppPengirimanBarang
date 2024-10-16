@@ -9,6 +9,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers';
+import { API_ENDPOINT } from "../../utils/api-endpoint";
 
 const CheckModal = ({ show, onHide, noTrack, estimatedCost, shipmentId }) => {
   const navigate = useNavigate(); // Initialize useNavigate
@@ -19,7 +20,7 @@ const CheckModal = ({ show, onHide, noTrack, estimatedCost, shipmentId }) => {
   const handleNext = async () => {
     try {
       // Make a PUT request to update shipment data
-      const response = await axios.put(`http://localhost:8000/api/v1/shipments/${shipmentId}`, {
+      const response = await axios.put(`${API_ENDPOINT.BASE_URL}${API_ENDPOINT.UPDATE_SHIPMENT.replace(':id', shipmentId)}`, {
         costShipment: estimatedCost,
         methodPayment: methodPayment,
         pickupTime: pickupTime.toISOString(), // Send the selected pickup time

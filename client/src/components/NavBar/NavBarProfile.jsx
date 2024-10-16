@@ -130,7 +130,7 @@ const NavBar = () => {
 
           <Nav>
             <Stack direction="horizontal" gap={4}>
-              {user && (
+              {userProfiles && (
                 <>
                   <Link to="/" className="link-light text-decoration-none">
                     <div className="">
@@ -161,7 +161,7 @@ const NavBar = () => {
                 </>
               )}
 
-              {!user && (
+              {!userProfiles && (
                 <>
                   <Link
                     to="/login"
