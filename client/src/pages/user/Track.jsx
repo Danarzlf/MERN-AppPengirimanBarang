@@ -53,7 +53,6 @@ const Track = () => {
                   <th>Type</th>
                   <th>Status</th>
                   <th>Aksi</th>
-                  {/* Add more fields as per API response */}
                 </tr>
               </thead>
               <tbody>
